@@ -1,0 +1,302 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CrawfisSoftware.IGraph</name>
+    </assembly>
+    <members>
+        <member name="T:CrawfisSoftware.Collections.Graph.IFiniteGraph`2">
+            <summary>
+            Graph interface for graphs with finite size.
+            </summary>
+            <typeparam name="N">The type associated at each node. Called a node or node label</typeparam>
+            <typeparam name="E">The type associated at each edge. Also called the edge label.</typeparam>
+            <seealso cref="T:CrawfisSoftware.Collections.Graph.IGraph`2"/>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IFiniteGraph`2.NumberOfEdges">
+            <summary>
+            Get the number of edges in the graph.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IFiniteGraph`2.NumberOfNodes">
+            <summary>
+            Get the number of nodes in the graph.
+            </summary>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.IEdge`2">
+            <summary>
+            IEdge provides a standard interface to specify an edge and any data associated
+            with an edge within a graph.
+            </summary>
+            <typeparam name="N">The type of the nodes in the graph.</typeparam>
+            <typeparam name="E">The type of the data on an edge.</typeparam>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IEdge`2.From">
+            <summary>
+            Get the Node label that this edge emanates from.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IEdge`2.To">
+            <summary>
+            Get the Node label that this edge terminates at.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IEdge`2.Value">
+            <summary>
+            Get the edge label for this edge.
+            </summary>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.IGraph`2">
+            <summary>
+            The Graph interface
+            </summary>
+            <typeparam name="N">The type associated at each node. Called a node or node label. These must be unique.</typeparam>
+            <typeparam name="E">The type associated at each edge. Also called the edge label.</typeparam>   
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IGraph`2.Nodes">
+            <summary>
+            Iterator for the nodes in the graph.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IGraph`2.Neighbors(`0)">
+            <summary>
+            Iterator for the children or neighbors of the specified node.
+            </summary>
+            <param name="node">The node.</param>
+            <returns>An enumerator of nodes.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IGraph`2.Parents(`0)">
+            <summary>
+            Iterator over the parents or immediate ancestors of a node.
+            </summary>
+            <remarks>May not be supported by all graphs.</remarks>
+            <param name="node">The node.</param>
+            <returns>An enumerator of nodes.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IGraph`2.OutEdges(`0)">
+            <summary>
+            Iterator over the emanating edges from a node.
+            </summary>
+            <param name="node">The node.</param>
+            <returns>An enumerator of nodes.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IGraph`2.InEdges(`0)">
+            <summary>
+            Iterator over the in-coming edges of a node.
+            </summary>
+            <remarks>May not be supported by all graphs.</remarks>
+            <param name="node">The node.</param>
+            <returns>An enumerator of edges.</returns>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IGraph`2.Edges">
+            <summary>
+            Iterator for the edges in the graph, yielding IEdge's
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IGraph`2.ContainsEdge(`0@,`0@)">
+            <summary>
+            Tests whether an edge exists between two nodes.
+            </summary>
+            <param name="fromNode">The node that the edge emanates from.</param>
+            <param name="toNode">The node that the edge terminates at.</param>
+            <returns>True if the edge exists in the graph. False otherwise.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IGraph`2.GetEdgeLabel(`0@,`0@)">
+            <summary>
+            Gets the label on an edge.
+            </summary>
+            <param name="fromNode">The node that the edge emanates from.</param>
+            <param name="toNode">The node that the edge terminates at.</param>
+            <returns>The edge.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IGraph`2.TryGetEdge(`0@,`0@,`1@)">
+            <summary>
+            Exception safe routine to get the label on an edge.
+            </summary>
+            <param name="fromNode">The node that the edge emanates from.</param>
+            <param name="toNode">The node that the edge terminates at.</param>
+            <param name="edge">The resulting edge if the method was successful. A default
+            value for the type if the edge could not be found.</param>
+            <returns>True if the edge was found. False otherwise.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.IIndexedEdge`1">
+            <summary>
+            IEdge provides a standard interface to specify an edge and any data associated
+            with an edge within a graph.
+            </summary>
+            <typeparam name="E">The type of the data on an edge.</typeparam>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IIndexedEdge`1.From">
+            <summary>
+            The index of the node that the edge or arc emanates from.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IIndexedEdge`1.To">
+            <summary>
+            The index of the node the edge or arc terminates at.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IIndexedEdge`1.Value">
+            <summary>
+            The label on the edge.
+            </summary>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.IIndexedGraph`2">
+            <summary>
+            Interface for a (static) index-based graph.
+            </summary>
+            <remarks>Node indices are used and returned whenever possible. Use
+            the <seealso cref="M:CrawfisSoftware.Collections.Graph.IIndexedGraph`2.GetNodeLabel(System.Int32)"/> method to access the node's label.</remarks>
+            <typeparam name="N">The type of the nodes in the graph.</typeparam>
+            <typeparam name="E">The type of the data on an edge.</typeparam>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IIndexedGraph`2.NumberOfEdges">
+            <summary>
+            Get the number of edges in the graph.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IIndexedGraph`2.NumberOfNodes">
+            <summary>
+            Get the number of nodes in the graph.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IIndexedGraph`2.Nodes">
+            <summary>
+            Iterator for the node indices in the graph.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IIndexedGraph`2.Edges">
+            <summary>
+            Iterator for the edges in the graph, yielding IIndexedEdge's
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IIndexedGraph`2.GetNodeLabel(System.Int32)">
+            <summary>
+            Returns the node label associated with the node at index <paramref name="nodeIndex"/>.
+            </summary>
+            <param name="nodeIndex">The index of the node.</param>
+            <returns>The label associated with the node.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IIndexedGraph`2.Neighbors(System.Int32)">
+            <summary>
+            Iterator for the children or neighbors of the specified node.
+            </summary>
+            <param name="nodeIndex">The index of the node.</param>
+            <returns>An enumerator of node indices.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IIndexedGraph`2.OutEdges(System.Int32)">
+            <summary>
+            Iterator over the emanating edges from a node.
+            </summary>
+            <param name="nodeIndex">The index of the node.</param>
+            <returns>An enumerator of edges.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IIndexedGraph`2.Parents(System.Int32)">
+            <summary>
+            Iterator over the parents or immediate ancestors of a node.
+            </summary>
+            <remarks>May not be supported by all graphs.</remarks>
+            <param name="nodeIndex">The index of the node.</param>
+            <returns>An enumerator of node indices.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IIndexedGraph`2.InEdges(System.Int32)">
+            <summary>
+            Iterator over the in-coming edges of a node.
+            </summary>
+            <remarks>May not be supported by all graphs.</remarks>
+            <param name="nodeIndex">The index of the node.</param>
+            <returns>An enumerator of node indices.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IIndexedGraph`2.ContainsEdge(System.Int32,System.Int32)">
+            <summary>
+            Tests whether an edge exists between two nodes.
+            </summary>
+            <param name="fromNode">Index of the node that the edge emanates from.</param>
+            <param name="toNode">Index of the node that the edge terminates at.</param>
+            <returns>True if the edge exists in the graph. False otherwise.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IIndexedGraph`2.GetEdgeLabel(System.Int32,System.Int32)">
+            <summary>
+            Gets the label on an edge.
+            </summary>
+            <param name="fromNode">Index of the node that the edge emanates from.</param>
+            <param name="toNode">Index of the node that the edge terminates at.</param>
+            <returns>The label on the edge.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IIndexedGraph`2.TryGetEdgeLabel(System.Int32,System.Int32,`1@)">
+            <summary>
+            Exception safe routine to get the label on an edge.
+            </summary>
+            <param name="fromNode">Index of the node that the edge emanates from.</param>
+            <param name="toNode">Index of the node that the edge terminates at.</param>
+            <param name="edge">The resulting edge label if the method was successful. A default
+            value for the type if the edge could not be found.</param>
+            <returns>True if the edge was found. False otherwise.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.IndexedEdge`1">
+            <summary>
+            Struct to hold a graph edge with indices to both nodes and an edge value.
+            </summary>
+            <typeparam name="E">The type of the edge value.</typeparam>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.IndexedEdge`1.#ctor(System.Int32,System.Int32,`0)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="from">Node index of originating node.</param>
+            <param name="to">Node index where following the edge ends up</param>
+            <param name="edgeLabel">Data or edge weight associated with this edge.</param>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IndexedEdge`1.From">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IndexedEdge`1.To">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.IndexedEdge`1.Value">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.ISortedGraph">
+            <summary>
+            Interface for topologically sorted graphs
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.ISortedGraph.IsSorted">
+            <summary>
+            Indicates whether the graph is already sorted.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.ISortedGraph.SortTopologically">
+            <summary>
+            Sorts the graph.
+            </summary>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.ITransposeGraph`2">
+            <summary>
+            Interface used to allow the transpose of a directed graph.
+            The transpose of a graph has all of the edge directions reversed.
+            </summary>
+            <typeparam name="N">The type of the nodes in the graph.</typeparam>
+            <typeparam name="E">The type of the data on an edge.</typeparam>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.ITransposeGraph`2.Transpose">
+            <summary>
+            Compute the transpose of the graph and return it.
+            </summary>
+            <returns>An IGraph with the same type parameters.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.ITransposeIndexedGraph`2">
+            <summary>
+            Interface used to allow the transpose of a directed graph.
+            The transpose of a graph has all of the edge directions reversed.
+            </summary>
+            <typeparam name="N">The type of the nodes in the graph.</typeparam>
+            <typeparam name="E">The type of the data on an edge.</typeparam>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.ITransposeIndexedGraph`2.Transpose">
+            <summary>
+            Compute the transpose of the graph and return it.
+            </summary>
+            <returns>An IIndexedGraph with the same type parameters.</returns>
+        </member>
+    </members>
+</doc>

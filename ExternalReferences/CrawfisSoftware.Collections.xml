@@ -1,0 +1,992 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CrawfisSoftware.Collections</name>
+    </assembly>
+    <members>
+        <member name="T:CrawfisSoftware.Collections.DoubleBuffer`1">
+            <summary>
+            Contains two buffers that can be swapped when needed. Actually, they can be any type of class.
+            For double buffering, use a type that is a buffer, like IPriorityCollection or QueueAdaptor.
+            </summary>
+            <typeparam name="T">Specifies the type of the two objects.</typeparam>
+            <remarks>Could have restricted the generic type T to be from IPriorityCollection, but it is not needed.</remarks>
+            <remarks>This class is not thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.DoubleBuffer`1.#ctor(`0,`0)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="buffer1">The first buffer. Initially the front buffer.</param>
+            <param name="buffer2">The second buffer. Initially the back buffer.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.DoubleBuffer`1.SwapBuffers">
+            <summary>
+            Swap the front buffer with the back buffer.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.DoubleBuffer`1.Front">
+            <summary>
+            Get the current front buffer.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.DoubleBuffer`1.Back">
+            <summary>
+            Get the current back buffer.
+            </summary>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.DoubleBufferGated`1">
+            <summary>
+            Contains two buffers that can be swapped when needed.
+            </summary>
+            <typeparam name="T">Specifies the type of buffers.</typeparam>
+            <remarks>This class is thread-safe, given the constraints that only
+            one thread is a master and only one slave thread exists, and that
+            both of the threads call Initialize appropriately before anything else.</remarks>
+            <remarks>This is a <c>very dangerous</c> class and should be avoided unless you really
+            know what you are doing.</remarks>
+            <remarks>This class is thread-safe under the single use-case this class is designed for.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.DoubleBufferGated`1.#ctor(`0,`0)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="buffer1">The first buffer. Initially the front buffer.</param>
+            <param name="buffer2">The second buffer. Initially the back buffer.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.DoubleBufferGated`1.SwapBuffers(System.Boolean,System.Boolean)">
+            <summary>
+            Swap the front buffer with the back buffer.
+            </summary>
+            <param name="isMaster"><c>True</c> if this is the master thread and should lock the front buffer.
+            <c>False</c> if this is the slave thread and should lock the back buffer.</param>
+            <param name="blockMaster">If <c>true,</c> and <paramref name="isMaster"/> is <c>true,</c>
+            then the master thread will block and wait for the slave thread to call this routine.
+            Otherwise, the master thread will attempt to swap the buffers. It will succeed if the slave 
+            thread is already blocked waiting on SwapBuffers. Otherwise it will return without swapping
+            buffers.</param>
+            <remarks>
+            The Master can swap buffers many times before the Slave is even
+            initialized (calls Initialize(false)). However, the Slave
+            can not call SwapBuffers before the Master calls Initialize or
+            deadlock will occur.
+            </remarks>
+            <remarks>This routine is thread-safe under the single use-case this class is designed for.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.DoubleBufferGated`1.Initialize(System.Boolean)">
+            <summary>
+            Associate a master and a slave thread with this instance.
+            </summary>
+            <param name="isMaster">True if this is the thread that should be the master thread.</param>
+            <remarks>
+            This routine should be called by each thread at start-up,
+            once with true for the Master thread and once with false
+            for the slave thread. These calls lock the front buffer to
+            the Master and the back buffer to the slave. The threads hold
+            these locks until they both call SwapBuffers.
+            </remarks>
+            <remarks>This routine is thread-safe under the single use-case this class is designed for.</remarks>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.DoubleBufferGated`1.Front">
+            <summary>
+            Get the current front buffer.
+            </summary>
+            <remarks>This routine is thread-safe under the single use-case this class is designed for.</remarks>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.DoubleBufferGated`1.Back">
+            <summary>
+            Get the current back buffer.
+            </summary>
+            <remarks>This routine is thread-safe under the single use-case this class is designed for.</remarks>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.EnumerableExtensions">
+            <summary>
+            Static class of extensions for IEnumerable and IList.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.EnumerableExtensions.Shuffle``1(System.Collections.Generic.IList{``0},System.Random)">
+            <summary>
+            Enumerates a list in a random order.
+            </summary>
+            <typeparam name="T">Generic type of the list elements</typeparam>
+            <param name="finiteList">A list.</param>
+            <param name="random">Optional random number generator.</param>
+            <returns>An enumeration of the list elements.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.EnumerableExtensions.MakeInfinite``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Repeatedly enumerates a set
+            </summary>
+            <param name="possibleFiniteSet">A stream of objects of type T.</param>
+            <returns>An infinite stream with the finiteSet repeated.</returns>
+            <seealso cref="!:TakeWithRepeats()"/>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.EnumerableExtensions.MakeFinite``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Returns either a finite set or the first N items
+            </summary>
+            <param name="stream">A stream of objects of type T.</param>
+            <param name="maxSetSize">Limit the resulting output to this size. Default is 1,000.</param>
+            <returns>A finite stream.</returns>
+            <seealso cref="!:TakeWithRepeats()"/>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.EnumerableExtensions.TakeWithRepeats``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Creates a finite stream by repeating if necessary another stream.
+            </summary>
+            <param name="numberOfSamples">The max number of objects to enumerate.</param>
+            <param name="stream">A stream of type T</param>
+            <returns>A stream of type T</returns>
+            <remarks>Equivalent to using LINQ's Take(numberOfSamples) with MakeInfinite(finiteSet).</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.EnumerableExtensions.CartesianProduct``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{``0}})">
+            <summary>
+            Performs a n-Cartesian product (or cross product) from the 
+            set of sets passed in. 
+            </summary>
+            <typeparam name="T">The type of the elements in the sets.</typeparam>
+            <param name="inputs">A set, N of sets.</param>
+            <returns>A set of N-dimensional sets.</returns>
+            <example>{a,b} x {c,d} => {(a,c), (a,d), (b,c), (b,d)}</example>
+            <seealso cref="M:CrawfisSoftware.Collections.EnumerableExtensions.CartesianProduct``1(System.Collections.Generic.IEnumerable{``0}[])"/>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.EnumerableExtensions.CartesianProduct``1(System.Collections.Generic.IEnumerable{``0}[])">
+            <summary>
+            Performs a n-Cartesian product (or cross product) from the 
+            set of sets passed in. 
+            </summary>
+            <typeparam name="T">The type of the elements in the sets.</typeparam>
+            <param name="inputs">A list of sets.</param>
+            <returns>A set of N-dimensional sets.</returns>
+            <example>{a,b} x {c,d} => {(a,c), (a,d), (b,c), (b,d)}</example>
+            <seealso cref="M:CrawfisSoftware.Collections.EnumerableExtensions.CartesianProduct``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{``0}})"/>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.EnumerableExtensions.Append``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>
+            Creates a new IEnumerable by adding the passed in item to the old IEnumerable.
+            </summary>
+            <typeparam name="T">A generic type for the IEnumerable and item.</typeparam>
+            <param name="currentList">The existing list of size N.</param>
+            <param name="newItem">The new item to add to the list.</param>
+            <returns>A new list of size N+1 containing the newItem.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.EnumerableExtensions.EnumFlagUnion``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Converts a list of Enum flags to a combined Flag Enum (a Union of the Flags).
+            </summary>
+            <typeparam name="T">Must be a Flag Enum</typeparam>
+            <param name="values">The list of Enum values to combine.</param>
+            <returns></returns>
+            <example>Direction[] enums = new[] { Direction.N, Direction.S };
+                     Direction flags = enums.EnumFlagUnion(); // Direction.N | Direction.S
+            </example>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.EnumerableExtensions.EnumFlagSubsets``1(``0)">
+            <summary>
+            Returns a list of individual Enum values from a Enum Flag.
+            </summary>
+            <typeparam name="T">Needs to be an Enum</typeparam>
+            <param name="flags">The bits or Flags of the Enum to enumerate.</param>
+            <returns>Each flag that is "set" or turned on in the Flag Enum.</returns>
+            <example>Direction directionFlags = Direction.N | Direction.E | Direction.S;
+                     Direction[] directionList = flags.EnumFlagSubsets().ToArray();
+                     { Direction.N, Direction.E, Direction.S }
+            </example>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.GenericCommand`1">
+            <summary>
+            A Command Design pattern using Generics and delegates (or lambda expression).
+            </summary>
+            <typeparam name="T">The class or interface that will receive the command.</typeparam>
+            <remarks>See Jason Olson's June 14, 2008 Blog: 
+            http://www.managed-world.com/2008/06/15/AvoidingInheritanceDependenciesUsingGenericsAndLambdas.aspx
+            on this.</remarks>
+            <remarks>Note that this is strongly typed. As such, you should use this only with types supporting a
+            common (and higher-level) interface, otherwise use the standard Command Design Pattern.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.GenericCommand`1.#ctor(`0,System.Action{`0})">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="receiver">The object that will be used in the command.</param>
+            <param name="commandToExecute">An <typeparamref name="Action{T}{T}"/> or delegate
+            instance that takes as input one parameter, the <paramref name="receiver"/>.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.GenericCommand`1.Execute">
+            <summary>
+            Perform the command, passing in the receiver.
+            </summary>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Heap`1">
+            <summary>
+            An implementation of a Heap data structure.
+            </summary>
+            <typeparam name="T">The type of item stored in the heap.</typeparam>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Heap`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrawfisSoftware.Collections.Heap`1"/> class.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Heap`1.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrawfisSoftware.Collections.Heap`1"/> class.
+            </summary>
+            <param name="capacity">The capacity.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Heap`1.#ctor(System.Collections.Generic.IComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrawfisSoftware.Collections.Heap`1"/> class.
+            </summary>
+            <param name="comparer">The comparer to use.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="comparer"/> is a null reference (<c>Nothing</c> in Visual Basic).</exception>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Heap`1.#ctor(System.Int32,System.Collections.Generic.IComparer{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrawfisSoftware.Collections.Heap`1"/> class.
+            </summary>
+            <param name="capacity">The initial capacity of the Heap.</param>
+            <param name="comparer">The comparer to use.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="comparer"/> is a null reference (<c>Nothing</c> in Visual Basic).</exception>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Heap`1.Root">
+            <summary>
+            Gets the smallest item in the heap (located at the root).
+            </summary>
+            <returns>The value of the root of the Heap.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:CrawfisSoftware.Collections.Heap`1"/> is empty.</exception>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Heap`1.RemoveRoot">
+            <summary>
+            Removes the smallest item in the heap (located at the root).
+            </summary>
+            <returns>The value contained in the root of the Heap.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:CrawfisSoftware.Collections.Heap`1"/> is empty.</exception>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Heap`1.ComparerToUse">
+            <summary>
+            Gets or sets the object used to compare to items on the heap.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Heap`1.Contains(`0)">
+            <summary>
+            Determines whether the <see cref="T:System.Collections.Generic.ICollection`1"/> contains a specific value.
+            </summary>
+            <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
+            <returns>
+            true if item is found in the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Heap`1.CopyTo(`0[],System.Int32)">
+            <summary>
+            Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1"/> to an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
+            </summary>
+            <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from <see cref="T:System.Collections.Generic.ICollection`1"/>. The <see cref="T:System.Array"/> must have zero-based indexing.</param>
+            <param name="arrayIndex">The zero-based index in array at which copying begins.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="arrayIndex"/> is less than 0.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="array"/> is a null reference (<c>Nothing</c> in Visual Basic).</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="array"/> is multidimensional.-or-<paramref name="arrayIndex"/> is equal to or greater than the length of array.-or-The number of elements in the source <see cref="T:System.Collections.Generic.ICollection`1"/> is greater than the available space from arrayIndex to the end of the destination array.-or-Type T cannot be cast automatically to the type of the destination array.</exception>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Heap`1.Count">
+            <summary>
+            Gets the number of elements contained in the <see cref="T:System.Collections.ICollection"/>.
+            </summary>
+            <returns>The number of elements contained in the <see cref="T:System.Collections.ICollection"/>.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Heap`1.Add(`0)">
+            <summary>
+            Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+            </summary>
+            <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
+            <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.</exception>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Heap`1.System#Collections#Generic#ICollection{T}#Remove(`0)">
+            <summary>
+            Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+            </summary>
+            <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
+            <returns>
+            true if item was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false. This method also returns false if item is not found in the original <see cref="T:System.Collections.Generic.ICollection`1"/>.
+            </returns>
+            <exception cref="T:System.NotSupportedException">Always.</exception>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Heap`1.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+            </returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Heap`1.Clear">
+            <summary>
+            Clears all the objects in this instance.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Heap`1.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this instance is read only.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is read only; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Heap`1.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Gets the enumerator.
+            </summary>
+            <returns>An enumerator for enumerating though the collection.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.HeapAdaptor`1">
+            <summary>
+            A wrapper that adapts a <typeparamref name="CrawfisSoftware.Collections.Heap{T}.Collections.Heap{T}"/> to a 
+            <typeparamref name="IPriorityCollection{T}{T}"/>.
+            </summary>
+            <typeparam name="T">The type of the elements in the collection.</typeparam>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.HeapAdaptor`1.#ctor(System.Int32,System.Collections.Generic.IComparer{`0})">
+            <summary>
+            Constructor specifying an initial size and an <typeparamref name="IComparer{T}{T}"/>.
+            </summary>
+            <param name="capacity">The initial number of elements that the 
+            <typeparamref name="HeapAdaptor{T}{T}"/> can contain.</param>
+            <param name="costComparer">The comparer to use.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.HeapAdaptor`1.#ctor(System.Int32)">
+            <summary>
+            Constructor specifying an initial heap size.
+            </summary>
+            <param name="capacity">The initial number of elements that the 
+            <typeparamref name="HeapAdaptor{T}{T}"/> can contain.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.HeapAdaptor`1.#ctor">
+            <summary>
+            Default Constructor.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.HeapAdaptor`1.GetNext">
+            <summary>
+            Gets the next element in the heap.
+            </summary>
+            <returns>The next item in the heap.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            An <paramref name="InvalidOperationException"/> is thrown if the 
+            <typeparamref name="HeapAdaptor{T}{T}"/> is empty.</exception>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.HeapAdaptor`1.Peek">
+            <summary>
+            Gets the next item from the heap.
+            </summary>
+            <returns>The next item from the heap.</returns>
+            <remarks>Unlike GetNext, this method does not change the underlying heap.</remarks>
+            <exception cref="T:System.InvalidOperationException">
+            An <paramref name="InvalidOperationException"/> is thrown if the 
+            <typeparamref name="HeapAdaptor{T}{T}"/> is empty.</exception>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.HeapAdaptor`1.Put(`0)">
+            <summary>
+            Adds the item to the heap.
+            </summary>
+            <param name="item">The item to insert into the heap.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.HeapAdaptor`1.IsFull">
+            <summary>
+            Checks whether the heap is full.
+            </summary>
+            <returns>True if the heap is full. False otherwise.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.IndexShuffling">
+            <summary>
+            Static class for shuffling array indices.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.IndexShuffling.GenerateChoices(System.Random,System.Int32,System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Generate a set (n=numberOfChoices) of indices for a set of size totalSetSize.
+            </summary>
+            <param name="random">A seeded random number generator.</param>
+            <param name="totalSetSize">The maximum index of the set.</param>
+            <param name="numberOfChoices">The desired number of indices to return.</param>
+            <param name="singleChoice">If true, a single random index is returned for all indices. Default is false.</param>
+            <param name="noDuplicates">If true and totalSetSize > numberOfChoices, then the randomized indices will not have duplicates. Default is false. Ignored if singleChoice is true.</param>
+            <returns>An array of indices of size numberOfChoices.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.IndexShuffling.RandomShuffle(System.Random,System.Int32,System.Int32)">
+            <summary>
+            Generate a set (n=numberOfChoices) of indices for a set of size totalSetSize, with out duplicates.
+            </summary>
+            <param name="random">A seeded random number generator.</param>
+            <param name="totalSetSize">The maximum index of the set.</param>
+            <param name="numberOfChoices">The desired number of indices to return.</param>
+            <returns>An array of indices of size numberOfChoices.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.IndexShuffling.RandomShuffle(System.Int32,System.Int32)">
+            <summary>
+            Generate a set (n=numberOfChoices) of indices for a set of size totalSetSize. Without duplicates.
+            </summary>
+            <param name="totalSetSize">The maximum index of the set.</param>
+            <param name="numberOfChoices">The desired number of indices to return.</param>
+            <returns>An array of indices of size numberOfChoices.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.IndexShuffling.RandomChoices(System.Random,System.Int32,System.Int32)">
+            <summary>
+            Generate a set (n=numberOfChoices) of indices for a set of size totalSetSize. With possible duplicates.
+            </summary>
+            <param name="random">A seeded random number generator.</param>
+            <param name="totalSetSize">The maximum index of the set.</param>
+            <param name="numberOfChoices">The desired number of indices to return.</param>
+            <returns>An array of indices of size numberOfChoices.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.IndexShuffling.RandomChoices(System.Int32,System.Int32)">
+            <summary>
+            Generate a set (n=numberOfChoices) of indices for a set of size totalSetSize. With possible duplicates.
+            </summary>
+            <param name="totalSetSize">The maximum index of the set.</param>
+            <param name="numberOfChoices">The desired number of indices to return.</param>
+            <returns>An array of indices of size numberOfChoices.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.IndexShuffling.RandomSingleChoice(System.Random,System.Int32,System.Int32)">
+            <summary>
+            Randomly pick an index from set of size totalSetSize. Return an array of size numberOfChoices with the same index.
+            </summary>
+            <param name="random">A seeded random number generator.</param>
+            <param name="totalSetSize">The maximum index of the set.</param>
+            <param name="numberOfChoices">The desired number of indices to return.</param>
+            <returns>An array of indices of size numberOfChoices.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.IndexShuffling.RandomSingleChoice(System.Int32,System.Int32)">
+            <summary>
+            Randomly pick an index from set of size totalSetSize. Return an array of size numberOfChoices with the same index.
+            </summary>
+            <param name="totalSetSize">The maximum index of the set.</param>
+            <param name="numberOfChoices">The desired number of indices to return.</param>
+            <returns>An array of indices of size numberOfChoices.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.IndexShuffling.InterleaveSets``1(System.Random,System.Int32,System.Int32[],System.Collections.Generic.IList{``0},System.Collections.Generic.IList{``0},System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Interleave two sets of objects. The first set is placed at the locations specified by setOneLocations.
+            </summary>
+            <typeparam name="T">The type of objects.</typeparam>
+            <param name="random">A seeded random number generator.</param>
+            <param name="desiredSetSize">The desired number of objects to return.</param>
+            <param name="setOneLocations">The indices in the desired set which should be from set  one.</param>
+            <param name="setOne">A set of possible choices for set one.</param>
+            <param name="setTwo">A set of possible choices for set two.</param>
+            <param name="setOneSingleSelector">If true, use the same set one wherever needed for set one. Default is false.</param>
+            <param name="setTwoSingleSelector">If true, use the same set two wherever needed for set two. Default is false.</param>
+            <param name="allowRepeats">If false, the sets will be shuffled to avoid duplicates. Default is true.</param>
+            <returns>An array of objects of type <typeparamref name="T"/></returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Instrumented2DArray`1">
+            <summary>
+            A 2D array with an event to notify you every time the array is possibly changed.
+            </summary>
+            <typeparam name="T">The type of the underlying 2D array.</typeparam>
+        </member>
+        <member name="F:CrawfisSoftware.Collections.Instrumented2DArray`1.array2D">
+            <summary>
+            The underlying 2D array.
+            </summary>
+        </member>
+        <member name="E:CrawfisSoftware.Collections.Instrumented2DArray`1.ValueChanged">
+            <summary>
+            An event to notify you every time the array is possibly changed.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Instrumented2DArray`1.Item(System.Int32,System.Int32)">
+            <summary>
+            Get or set the value at the specified column and row.
+            </summary>
+            <param name="column">The column.</param>
+            <param name="row">The row.</param>
+            <returns>The value at this location.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Instrumented2DArray`1.GetArray">
+            <summary>
+            Get a 2D array of T.
+            </summary>
+            <returns>A 2D array.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Instrumented2DArray`1.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="width">The width of the 2D array.</param>
+            <param name="height">The height of the 2D array.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Instrumented2DArray`1.#ctor(`0[0:,0:])">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="directions">A 2D array of type T.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Instrumented2DArray`1.ReplaceArray(`0[0:,0:])">
+            <summary>
+            Replace the underlying data with a new 2D array. Shallow copy.
+            </summary>
+            <param name="newDirections">An array of type T.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Instrumented2DArray`1.GetLength(System.Int32)">
+            <summary>
+            Get the length of the array in the specified dimension.
+            </summary>
+            <param name="dimension">Either 0 or 1.</param>
+            <returns>The length.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.IPriorityCollection`1">
+            <summary>
+            Interface for a priority-based collection or a collection with a determined 
+            order in accessing the elements of a collection  (e.g., queue, stack, etc.).
+            </summary>
+            <typeparam name="T">The type of the elements in the collection.</typeparam>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.IPriorityCollection`1.GetNext">
+            <summary>
+            Gets the next element in the collection.
+            </summary>
+            <returns>The next item in the collection.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.IPriorityCollection`1.Peek">
+            <summary>
+            Gets the next item from the collection.
+            </summary>
+            <returns>The next item from the collection.</returns>
+            <remarks>Unlike GetNext, this method does not change the underlying collection.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.IPriorityCollection`1.Put(`0)">
+            <summary>
+            Adds the item to the collection.
+            </summary>
+            <param name="item">The item to insert into the collection.</param>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.IPriorityCollection`1.Count">
+            <summary>
+            The number of items currently in the collection.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.IPriorityCollection`1.Clear">
+            <summary>
+            Clear the buffer.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.IPriorityCollection`1.IsFull">
+            <summary>
+            Checks whether the collection is full.
+            </summary>
+            <returns>True if the collection is full. False otherwise.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.PriorityCollectionBlocking`1">
+            <summary>
+            Represents a first-in, first-out collection of objects. It is based on
+            a concrete implementation of the <typeparamref name="CrawfisSoftware.Collections.IPriorityCollection{T}.Collections.IPriorityCollection{T}"/> 
+            interface. This class
+            blocks the thread when adding an item (enqueue) if the buffer is full, and
+            blocks the thread when removing an item (dequeue) if the buffer is empty.
+            </summary>
+            <typeparam name="T">Specifies the type of elements in the collection.</typeparam>
+            <seealso cref="!:PriorityQueueNonBlocking&lt;T&gt;"/>
+            <remarks>This class is thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionBlocking`1.#ctor">
+            <summary>
+            Initializes a new instance of the PriorityQueueBlocking{T}"
+            class that is empty and has the default initial capacity.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionBlocking`1.#ctor(System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the PriorityQueueBlocking{T}"
+            class that is empty and has the specified initial capacity.
+            </summary>
+            <param name="bufferType">A string descriptor for the buffer type.</param>
+            <param name="capacity">The initial number of elements that the PriorityQueueBlocking{T} can contain.</param>
+            <seealso cref="!:PriorityQueueFactory"/>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionBlocking`1.Quit">
+            <summary>
+            Signal any blocked threads to quit.
+            </summary>
+            <remarks>This routine is thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionBlocking`1.GetNext">
+            <summary>
+            Removes the next item from the collection.
+            </summary>
+            <returns>The next item in the collection.</returns>
+            <remarks>This routine is thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionBlocking`1.Peek">
+            <summary>
+            Gets the next item from the collection.
+            </summary>
+            <returns>The next item in the collection.</returns>
+            <remarks>Unlike GetNext, this method does not change the underlying collection.</remarks>
+            <remarks>This routine is thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionBlocking`1.Put(`0)">
+            <summary>
+            Adds the item to the collection.
+            </summary>
+            <param name="item">The item to insert into the collection.</param>
+            <remarks>This routine is thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionBlocking`1.IsFull">
+            <summary>
+            Checks whether the collection is full.
+            </summary>
+            <returns>True if the collection is full. False otherwise.</returns>
+            <remarks>This routine is thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionBlocking`1.Clear">
+            <summary>
+            Clear the buffer.
+            </summary>
+            <remarks>This routine is thread-safe.</remarks>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.PriorityCollectionBlocking`1.Count">
+            <summary>
+            Returns the current number of items in the collection.
+            </summary>
+            <remarks>This routine is thread-safe.</remarks>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.PriorityCollectionFactory">
+            <summary>
+            Provides a Factory Method to construct a concrete 
+            <typeparamref name="IPriorityCollection{T}{T}"/> instance.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionFactory.createQueue``1(System.String,System.Int32)">
+            <summary>
+            Creates a concrete <typeparamref name="IPriorityCollection{T}{T}"/> instance.
+            </summary>
+            <typeparam name="T">Specifies the type of elements in the collection.</typeparam>
+            <param name="queueType">Provides a string-based descriptor of the desired
+            concrete implementation.</param>
+            <param name="capacity">The initial number of elements that the 
+            <typeparamref name="IPriorityCollection{T}{T}"/> can contain.</param>
+            <returns>An instance of an <typeparamref name="IPriorityCollection{T}{T}"/>.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.PriorityCollectionNonBlocking`1">
+            <summary>
+            A thread-safe, but non-blocking wrapper on a <typeparamref name="IPriorityQUeue{T}{T}"/>. 
+            </summary>
+            <typeparam name="T">Specifies the type of elements in the collection.</typeparam>
+            <seealso cref="!:CrawfisSoftware.Collections.PriorityQueueBlocking&lt;T&gt;"/>
+            <remarks>This class is thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionNonBlocking`1.#ctor">
+            <summary>
+            Initializes a new instance of the <typeparamref name="PriorityQueueNonBlocking{T}{T}"/> 
+            class that is empty and has the default initial capacity.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionNonBlocking`1.#ctor(System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the <typeparamref name="PriorityQueueNonBlocking{T}{T}"/> 
+            class that is empty and has the specified initial capacity.
+            </summary>
+            <param name="bufferType">A string descriptor for the buffer type.</param>
+            <param name="capacity">The initial number of elements that the 
+            <typeparamref name="PriorityQueueNonBlocking{T}{T}"/> can contain.</param>
+            <seealso cref="!:PriorityQueueFactory"/>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionNonBlocking`1.Clear">
+            <summary>
+            Clear the buffer.
+            </summary>
+            <remarks>This routine is thread-safe.</remarks>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.PriorityCollectionNonBlocking`1.Count">
+            <summary>
+            The number of items currently in the collection.
+            </summary>
+            <remarks>This routine is thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionNonBlocking`1.GetNext">
+            <summary>
+            Removes the next item from the collection.
+            </summary>
+            <returns>The next item from the collection.</returns>
+            <remarks>This routine is thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionNonBlocking`1.Peek">
+            <summary>
+            Gets the next item from the collection.
+            </summary>
+            <returns>The next item from the collection.</returns>
+            <remarks>Unlike GetNext, this method does not change the underlying collection.</remarks>
+            <remarks>This routine is thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionNonBlocking`1.Put(`0)">
+            <summary>
+            Adds the item to the collection.
+            </summary>
+            <param name="item">The item to insert into the collection.</param>
+            <remarks>This routine is thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.PriorityCollectionNonBlocking`1.IsFull">
+            <summary>
+            Checks whether the collection is full.
+            </summary>
+            <returns>True if the collection is full. False otherwise.</returns>
+            <remarks>This routine is thread-safe.</remarks>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.QueueAdaptor`1">
+            <summary>
+            A wrapper that adapts a <typeparamref name="Queue{T}{T}"/> to a 
+            <typeparamref name="IPriorityCollection{T}{T}"/>.
+            </summary>
+            <typeparam name="T">The type of the elements in the collection.</typeparam>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.QueueAdaptor`1.#ctor(System.Int32)">
+            <summary>
+            Constructor specifying an initial queue size.
+            </summary>
+            <param name="capacity">The initial number of elements that the 
+            <typeparamref name="QueueAdaptor{T}{T}"/> can contain.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.QueueAdaptor`1.#ctor">
+            <summary>
+            Default Constructor.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.QueueAdaptor`1.GetNext">
+            <summary>
+            Gets the next element in the queue.
+            </summary>
+            <returns>The next item in the queue.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            An <paramref name="InvalidOperationException"/> is thrown if the 
+            <typeparamref name="QueueAdaptor{T}{T}"/> is empty.</exception>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.QueueAdaptor`1.Put(`0)">
+            <summary>
+            Adds the item to the queue.
+            </summary>
+            <param name="item">The item to insert into the queue.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.QueueAdaptor`1.IsFull">
+            <summary>
+            Checks whether the queue is full.
+            </summary>
+            <returns>True if the queue is full. False otherwise.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.RingBuffer`1">
+            <summary>
+            Represents a first-in, first-out collection of objects as in a queue, but
+            uses a fixed memory size. Also known as a circular queue.
+            </summary>
+            <typeparam name="T">Specifies the type of elements in the ring buffer.</typeparam>
+            <remarks>The priority of data in this can be thought of as not keeping track
+            of old news, so "I'm not a pack rat" priority or "That is yesterday's news" 
+            priority.</remarks>
+            <remarks>This class is not thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.RingBuffer`1.#ctor">
+            <summary>
+            Initializes a new instance of the <typeparamref name="RingBuffer{T}{T}"/> 
+            class that is empty and has the default initial capacity.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.RingBuffer`1.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <typeparamref name="RingBuffer{T}{T}"/> 
+            class that is empty and has the specified initial capacity.
+            </summary>
+            <param name="capacity">The initial number of elements that the 
+            <typeparamref name="RingBuffer{T}{T}"/> can contain.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.RingBuffer`1.Dequeue">
+            <summary>
+            Removes the next item from the queue.
+            </summary>
+            <returns>The next item in the ring buffer.</returns>
+            <remarks>This routine is not thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.RingBuffer`1.Enqueue(`0)">
+            <summary>
+            Adds the item to the queue.
+            </summary>
+            <param name="item">The item to insert into the queue.</param>
+            <remarks>Note, if the queue is full, this will overwrite the least-recently 
+            written item in the queue.</remarks>
+            <remarks>This routine is not thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.RingBuffer`1.IsFull">
+            <summary>
+            Checks whether the queue is full.
+            </summary>
+            <returns>True if the queue is full. False otherwise.</returns>
+            <remarks>This routine is not thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.RingBuffer`1.System#Collections#Generic#ICollection{T}#Add(`0)">
+            <summary>
+            Add the item to the queue.
+            </summary>
+            <param name="item">The item to add.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.RingBuffer`1.Clear">
+            <summary>
+            Clear the buffer.
+            </summary>
+            <remarks>This routine is not thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.RingBuffer`1.Contains(`0)">
+            <summary>
+            Determines whether an element is in the <typeparamref name="RingBuffer{T}{T}"/>.
+            </summary>
+            <param name="item">The object to locate in the <typeparamref name="RingBuffer{T}{T}"/>. 
+            The value can be <value>null</value> for reference types.</param>
+            <returns>true if item is found in the <typeparamref name="RingBuffer{T}{T}"/>; 
+            otherwise, false.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.RingBuffer`1.CopyTo(`0[],System.Int32)">
+            <summary>
+            Copies the elements of the ICollection to an Array, starting at a particular Array index.
+            </summary>
+            <param name="array">The one-dimensional Array that is the destination of the elements 
+            copied from ICollection. The Array must have zero-based indexing.</param>
+            <param name="arrayIndex">The zero-based index in array at which copying begins.</param>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.RingBuffer`1.Count">
+            <summary>
+            Returns the current number of items in the queue.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.RingBuffer`1.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this instance is read only.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is read only; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.RingBuffer`1.GetEnumerator">
+            <summary>
+            Gets a strongly-typed enumerator.
+            </summary>
+            <returns>An enumerator for the queue.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.RingBuffer`1.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Gets a generic enumerator
+            </summary>
+            <returns>An enumerator for the queue.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.RingBuffer`1.GetNext">
+            <summary>
+            Gets the next element in the queue.
+            </summary>
+            <returns>The next item in the queue.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.RingBuffer`1.Peek">
+            <summary>
+            Gets the next item from the queue.
+            </summary>
+            <returns>The next item from the queue.</returns>
+            <remarks>Unlike GetNext, this method does not change the underlying queue.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.RingBuffer`1.Put(`0)">
+            <summary>
+            Adds the item to the queue.
+            </summary>
+            <param name="item">The item to insert into the queue.</param>
+            <remarks>This routine is not thread-safe.</remarks>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.StackAdaptor`1">
+            <summary>
+            A wrapper that adapts a <typeparamref name="Stack{T}{T}"/> to a 
+            <typeparamref name="IPriorityCollection{T}{T}"/>.
+            </summary>
+            <typeparam name="T">The type of the elements in the collection.</typeparam>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.StackAdaptor`1.#ctor(System.Int32)">
+            <summary>
+            Constructor specifying an initial stack size.
+            </summary>
+            <param name="capacity">The initial number of elements that the 
+            <typeparamref name="StackAdaptor{T}{T}"/> can contain.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.StackAdaptor`1.#ctor">
+            <summary>
+            Default Constructor.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.StackAdaptor`1.GetNext">
+            <summary>
+            Gets the next element in the stack.
+            </summary>
+            <returns>The next item in the stack.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            An <paramref name="InvalidOperationException"/> is thrown if the 
+            <typeparamref name="StackAdaptor{T}{T}"/> is empty.</exception>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.StackAdaptor`1.Put(`0)">
+            <summary>
+            Adds the item to the stack.
+            </summary>
+            <param name="item">The item to insert into the stack.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.StackAdaptor`1.IsFull">
+            <summary>
+            Checks whether the stack is full.
+            </summary>
+            <returns>True if the stack is full. False otherwise.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.StickyBuffer`1">
+            <summary>
+            Holds a sticky current state. Basically it is a RingBuffer with one and only one item. 
+            If a new item is added (Put), then it replaces the current state.
+            If an item is removed (GetNext), then it retains this state as well.
+            </summary>
+            <typeparam name="T">Specifies the type of contained element.</typeparam>
+            <remarks>This class is probably thread-safe.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.StickyBuffer`1.#ctor">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.StickyBuffer`1.#ctor(`0)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="item">The item to use as the initial buffer value.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.StickyBuffer`1.GetNext">
+            <summary>
+            Gets the next element in the collection.
+            </summary>
+            <returns>The next item in the collection.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.StickyBuffer`1.Peek">
+            <summary>
+            Gets the next item from the collection.
+            </summary>
+            <returns>The next item from the collection.</returns>
+            <remarks>Unlike GetNext, this method does not change the underlying collection.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.StickyBuffer`1.Put(`0)">
+            <summary>
+            Adds the item to the collection.
+            </summary>
+            <param name="item">The item to insert into the collection.</param>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.StickyBuffer`1.Count">
+            <summary>
+            The number of items currently in the collection.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.StickyBuffer`1.Clear">
+            <summary>
+            Clear the buffer.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.StickyBuffer`1.IsFull">
+            <summary>
+            Checks whether the collection is full.
+            </summary>
+            <returns>Always returns false, as Put() can always be called.</returns>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,653 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CrawfisSoftware.Grid</name>
+    </assembly>
+    <members>
+        <member name="T:CrawfisSoftware.Collections.Graph.Direction">
+            <summary>
+            The compass directions for a grid.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Collections.Graph.Direction.None">
+            <summary>
+            All directions are blocked.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Collections.Graph.Direction.W">
+            <summary>
+            West or Left.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Collections.Graph.Direction.N">
+            <summary>
+            North or Up.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Collections.Graph.Direction.E">
+            <summary>
+            East or Right.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Collections.Graph.Direction.S">
+            <summary>
+            South or Down.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Collections.Graph.Direction.Undefined">
+            <summary>
+            Flag to indicate no directions have been set.
+            </summary>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.DirectionExtensions">
+            <summary>
+            A utility class for a few static methods dealing with the Direction Enum (flags).
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.DirectionExtensions.Reverse(CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Returns the reverse direction.
+            </summary>
+            <param name="direction">A Direction enum containing only one Direction.</param>
+            <returns>The opposite direction or Direction.None if invalid.</returns>
+            <example> Reverse(Direction.N) would return Direction.S. Reverse(Direction.N | Direction.W) would
+            return Direction.None.</example>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.DirectionExtensions.GetEdgeDirection(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Exception safe routine to get the label on an edge.
+            </summary>
+            <param name="i">The cell index of the grid.</param>
+            <param name="j">The cell index of the grid.</param>
+            <param name="width">The width of a fictional grid.</param>
+            <returns>The direction when moving from i to an adjacent cell j under the assumption that all grid edges exist.
+            Return Direction.None if j is not adjacent to i.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.DirectionExtensions.IsCrossSection(CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Checks if the specified direction is a cross-section.
+            </summary>
+            <param name="direction">The direction to test</param>
+            <returns>True if the specified direction is a cross-section.</returns>
+            <remarks>Will not work with Undefines. Use IMazeBuilder.RemoveUndefines to remove these first.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.DirectionExtensions.IsDeadEnd(CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Checks if the specified direction is a dead-end.
+            </summary>
+            <param name="direction">The direction to test</param>
+            <returns>True if the specified direction is a dead-end.</returns>
+            <remarks>Will not work with Undefines. Use IMazeBuilder.RemoveUndefines to remove these first.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.DirectionExtensions.IsStraight(CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Checks if the specified direction is a straight.
+            </summary>
+            <param name="direction">The direction to test</param>
+            <returns>True if the specified direction is a straight.</returns>
+            <remarks>Will not work with Undefines. Use IMazeBuilder.RemoveUndefines to remove these first.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.DirectionExtensions.IsTurn(CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Checks if the specified direction is a turn.
+            </summary>
+            <param name="direction">The direction to test</param>
+            <returns>True if the specified direction is a turn.</returns>
+            <remarks>Will not work with Undefines. Use IMazeBuilder.RemoveUndefines to remove these first.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.DirectionExtensions.IsTJunction(CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Checks if the specified direction is a T-junction.
+            </summary>
+            <param name="direction">The direction to test</param>
+            <returns>True if the specified direction is a T-junction.</returns>
+            <remarks>Will not work with Undefines. Use IMazeBuilder.RemoveUndefines to remove these first.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.DirectionExtensions.NumberOfExits(CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Counts the number of directions in the specified direction.
+            </summary>
+            <param name="direction">The direction to test</param>
+            <returns>The count of directions.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.GetGridLabel`1">
+            <summary>
+            A delegate for specifying the function used to retrieve
+            a label at the given grid location.
+            </summary>
+            <typeparam name="T">The type returned at each grid index.</typeparam>
+            <param name="i">The "x" index of the grid.</param>
+            <param name="j">The "y" index of the grid.</param>
+            <returns>The user-defined grid label at the index.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.GetEdgeLabel`1">
+            <summary>
+            A delegate for specifying the function used to retrieve
+            a label at for a given edge.
+            </summary>
+            <typeparam name="T">The type returned at each edge.</typeparam>
+            <param name="i">The "x" index of the grid.</param>
+            <param name="j">The "y" index of the grid.</param>
+            <param name="dir">The direction from the specified grid index.</param>
+            <returns>The user-defined edge label for the edge.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.Grid`2">
+            <summary>
+            The grid class provides a concrete implementation of an IIndexedGraph while allowing
+            for customization of the node and edge labels. The grid supports connectivity in the
+            four major directions (up, down, left, right). Toroidal grids are also possible.
+            Support for diagonal edges is not currently implemented.
+            </summary>
+            <typeparam name="N">The type of the node labels in the graph.</typeparam>
+            <typeparam name="E">The type of the edge labels in the graph.</typeparam>
+        </member>
+        <member name="F:CrawfisSoftware.Collections.Graph.Grid`2.nodeFunction">
+            <summary>
+            A function to get a node's data.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Collections.Graph.Grid`2.edgeFunction">
+            <summary>
+            A function to get an edge's data.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.Grid`2.WrapHorizontal">
+            <summary>
+            Get and set whether the grid wraps from the right-edge to the left-edge and vise versa.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.Grid`2.WrapVertical">
+            <summary>
+            Get and set whether the grid wraps from the top-edge to the bottom-edge and vise versa.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.Grid`2.EdgeDirections">
+            <summary>
+            Gets the list of edge directions that this grid is configured for.
+            This collection can be modified.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.Grid`2.Width">
+            <summary>
+            Gets the width or number of nodes in the horizontal direction.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.Grid`2.Height">
+            <summary>
+            Gets the height or number of nodes in the vertical direction.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.#ctor(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.GetGridLabel{`0},CrawfisSoftware.Collections.Graph.GetEdgeLabel{`1})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="width">Number of nodes in the horizontal direction.</param>
+            <param name="height">Number of nodes in the vertical direction.</param>
+            <param name="nodeAccessor">A GetGridLabel delegate instance used to determine
+            a node's label when queried.</param>
+            <param name="edgeAccessor">A GetEdgeLabel delegate instance used to determine
+            a edge's label when queried.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.GetNodeLabel(System.Int32,System.Int32)">
+            <summary>
+            Returns the node label associated with the node at the grid location.
+            </summary>
+            <param name="i">The "x" index of the grid.</param>
+            <param name="j">The "y" index of the grid.</param>
+            <returns>The label associated with the node.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.GetEdgeLabel(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Gets the label on an edge.
+            </summary>
+            <param name="i">The "x" index of the grid.</param>
+            <param name="j">The "y" index of the grid.</param>
+            <param name="dir">The direction from the specified grid index.</param>
+            <returns>The label on the edge.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.GetOutFlowDirections(System.Int32,System.Int32)">
+            <summary>
+            Returns all directions of neighbors to the cell (out-going if directed).
+            </summary>
+            <param name="i">The "x" index of the grid.</param>
+            <param name="j">The "y" index of the grid.</param>
+            <returns>A flag of type Direction.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.EdgeExists(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Checks if an edge exists at node(i,j) in the specified direction.
+            </summary>
+            <param name="i">The "x" index of the grid.</param>
+            <param name="j">The "y" index of the grid.</param>
+            <param name="dir">The direction from the specified grid index.</param>
+            <returns><c>True</c> if the an edge from node (i,j) in the direction
+            dir exists,<c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.TryGetEdge(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction,`1@)">
+            <summary>
+            Exception safe routine to get the label on an edge.
+            </summary>
+            <param name="i">The "x" index of the grid.</param>
+            <param name="j">The "y" index of the grid.</param>
+            <param name="dir">The direction from the specified grid index.</param>
+            <param name="edge">The resulting edge label if the method was successful. A default
+            value for the type if the edge could not be found.</param>
+            <returns>True if the edge was found. False otherwise.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.TraverseEdge(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Go to the neighbor in the specified direction and return the cell index.
+            </summary>
+            <param name="i">The "x" index of the grid.</param>
+            <param name="j">The "y" index of the grid.</param>
+            <param name="dir">The direction from the specified grid index.</param>
+            <returns>The cell index in the desired direction if it exists. -1 if that direction is invalid.</returns>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.Grid`2.NumberOfNodes">
+            <summary>
+            Get the number of nodes in the graph.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.Grid`2.NumberOfEdges">
+            <summary>
+            Get the number of edges in the graph.
+            </summary>
+            // Todo: This class is a complete grid. Can return a constant (take into account toroidal mapping)
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.Grid`2.Nodes">
+            <summary>
+            Iterator for the node indices in the graph.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.GetNodeLabel(System.Int32)">
+            <summary>
+            Returns the node label associated with the node at index <paramref name="nodeIndex"/>.
+            </summary>
+            <param name="nodeIndex">The index of the node.</param>
+            <returns>The label associated with the node.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.Neighbors(System.Int32)">
+            <summary>
+            Iterator for the children or neighbors of the specified node.
+            </summary>
+            <param name="nodeIndex">The index of the node.</param>
+            <returns>An enumerator of node indices.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.Parents(System.Int32)">
+            <summary>
+            Iterator over the parents or immediate ancestors of a node.
+            </summary>
+            <remarks>May not be supported by all graphs.</remarks>
+            <param name="nodeIndex">The index of the node.</param>
+            <returns>An enumerator of edges.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.OutEdges(System.Int32)">
+            <summary>
+            Iterator over the emanating edges from a node.
+            </summary>
+            <param name="nodeIndex">The index of the node.</param>
+            <returns>An enumerator of edges.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.InEdges(System.Int32)">
+            <summary>
+            Iterator over the in-coming edges of a node.
+            </summary>
+            <remarks>May not be supported by all graphs.</remarks>
+            <param name="nodeIndex">The index of the node.</param>
+            <returns>An enumerator of node indices.</returns>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.Grid`2.Edges">
+            <summary>
+            Iterator for the edges in the graph, yielding IIndexedEdge's
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.ContainsEdge(System.Int32,System.Int32)">
+            <summary>
+            Tests whether an edge exists between two nodes.
+            </summary>
+            <param name="fromNode">Index of the node that the edge emanates from.</param>
+            <param name="toNode">Index of the node that the edge terminates at.</param>
+            <returns>True if the edge exists in the graph. False otherwise.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.GetEdgeLabel(System.Int32,System.Int32)">
+            <summary>
+            Gets the label on an edge.
+            </summary>
+            <param name="fromNode">Index of the node that the edge emanates from.</param>
+            <param name="toNode">Index of the node that the edge terminates at.</param>
+            <returns>The label on the edge.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.TryGetEdgeLabel(System.Int32,System.Int32,`1@)">
+            <summary>
+            Exception safe routine to get the label on an edge.
+            </summary>
+            <param name="fromNode">Index of the node that the edge emanates from.</param>
+            <param name="toNode">Index of the node that the edge terminates at.</param>
+            <param name="edge">The resulting edge label if the method was successful. A default
+            value for the type if the edge could not be found.</param>
+            <returns>True if the edge was found. False otherwise.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.Transpose">
+            <summary>
+            Compute the transpose of the graph and return it.
+            </summary>
+            <returns>An IIndexedGraph with the same type parameters.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.ReverseDirection(CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Reverses the direction specified
+            </summary>
+            <param name="dir">A Direction.</param>
+            <returns>The opposite direction.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.DirectionLookUp(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction@)">
+            <summary>
+            Determine the Direction from <paramref name="fromNode"/> to <paramref name="toNode"/>.
+            </summary>
+            <param name="fromNode">Node index of the initial grid cell.</param>
+            <param name="toNode">Node index of the neighboring grid cell.</param>
+            <param name="dir">The direction of the specified edge if successful.</param>
+            <returns>True is the edge exists. False otherwise.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.DirectionLookUp(System.Int32,System.Int32,System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction@)">
+            <summary>
+            Determine the Direction from <paramref name="fromNode"/> to <paramref name="toNode"/>.
+            </summary>
+            <param name="i">Grid column of the initial grid cell.</param>
+            <param name="j">Grid row of the initial grid cell.</param>
+            <param name="iTo">Grid column of the neighboring grid cell.</param>
+            <param name="jTo">Grid row of the neighboring grid cell.</param>
+            <param name="dir">The direction cell (i,j) to (iTo,jTo) if successful.</param>
+            <returns>True is the edge exists. False otherwise.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.Grid`2.TryGetGridLocation(System.Int32,System.Int32@,System.Int32@)">
+            <summary>
+            Get the grid cells column and row from an index.
+            </summary>
+            <param name="nodeIndex">The graph index of the grid.</param>
+            <param name="i">On return, is set to the corresponding column on the grid.</param>
+            <param name="j">On return, is set to the corresponding row on the grid.</param>
+            <returns>True if the passed in node index is valid in the grid.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.GridPathComparer`2">
+            <summary>
+            Path comparer implementation used for finding paths. Implements PathCostComparer.
+            </summary>
+            <typeparam name="N">The type of the node labels in the corresponding graph.</typeparam>
+            <typeparam name="E">The type of the edge labels in the corresponding graph.</typeparam>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.GridPathComparer`2.#ctor(CrawfisSoftware.Collections.Graph.Grid{`0,`1},CrawfisSoftware.Collections.Graph.EdgeCostDelegate{`1},System.Single)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="grid">The <typeparamref name="Grid{N,E}{N,E}"/> that will be 
+            used in the path finding algorithms.</param>
+            <param name="edgeCostFunction">A function used to retrieve or calculate
+            the cost for a given edge.</param>
+            <param name="heuristicAcceleration">A coefficient to accelerate more towards the target using the heuristic.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.GridPathComparer`2.TargetHeuristic(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.GridTraversalExtensions">
+            <summary>
+            Useful static methods like finding cells and boundaries within some distance.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.GridTraversalExtensions.WalkableGridBoundary``2(CrawfisSoftware.Collections.Graph.Grid{``0,``1},System.Int32,System.Int32)">
+            <summary>
+            Given a grid returns a grid cell indices and offsets. These should be offset as if they are based on the lower-left corner.
+            </summary>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+            <param name="grid">A grid.</param>
+            <param name="startingIndex">The cell index to use as the center of the walkable area.</param>
+            <param name="maxDistance">the number of cells that can be reached from the startingIndex.</param>
+            <returns>An IEnumerable of grid cell indices and an offset.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.GridTraversalExtensions.WalkableBoundary``2(CrawfisSoftware.Collections.Graph.Grid{``0,``1},System.Int32,CrawfisSoftware.Collections.Graph.EdgeCostDelegate{``1},System.Single)">
+            <summary>
+            Given a grid with edge weights, returns a grid cell indices and offsets. These should be offset as if they are based on the lower-left corner.
+            </summary>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+            <param name="grid">A grid</param>
+            <param name="startingIndex">The cell index to use as the center of the walkable area.</param>
+            <param name="costDelegate">A function that converts an edge to a cost for that edge.</param>
+            <param name="maxDistance">The maximum path cost that is allowed.</param>
+            <returns></returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.GridUtility">
+            <summary>
+            Static methods to operate on Grid's.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.GridUtility.FindShortestPath(CrawfisSoftware.Collections.Graph.Grid{System.Int32,System.Int32},CrawfisSoftware.Collections.Graph.EdgeCostDelegate{System.Int32},System.Int32,System.Int32,System.Single)">
+            <summary>
+            FindPath provides the index-based edges from the start node to the target node if a path is found.
+            If a path is not found, no edges are enumerated.
+            </summary>
+            <param name="grid">The index-based grid to query against.</param>
+            <param name="edgeCostFunction">A function used to retrieve or calculate
+            the cost for a given edge.</param>
+            <param name="start">The starting node index for the desired path.</param>
+            <param name="target">The destination being searched for.</param>
+            <param name="heuristicAcceleration">A coefficient to accelerate more towards the target using the heuristic.</param>
+            <returns>An enumeration of the path from the starting node to the target node.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.GridUtility.StampInto(CrawfisSoftware.Collections.Graph.OccupancyGrid,CrawfisSoftware.Collections.Graph.OccupancyGrid,System.Int32,System.Int32)">
+            <summary>
+            Replace a portion of an OccupancyGrid with a rectangular stamp.
+            </summary>
+            <param name="grid">The OccupancyGrid to modify.</param>
+            <param name="stamp">A (usually smaller) OccupancyGrid to stamp into the grid.</param>
+            <param name="lowerLeftColumn">The lower-left corner column.</param>
+            <param name="lowerLeftRow">The lower-left corner row.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.GridUtility.ReplaceWithStamps(CrawfisSoftware.Collections.Graph.OccupancyGrid,CrawfisSoftware.Collections.Graph.StampSet{System.Boolean})">
+            <summary>
+            Create a new OccupancyGrid by replacing each value in the original grid with a stamp.
+            </summary>
+            <param name="grid">The OccupancyGrid to use as the control.</param>
+            <param name="stampSet">A stamp set that returns a stamp for true and a stamp for false.</param>
+            <returns>A new OccupancyGrid.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.GridUtility.CreateOccupancyStampSet(System.Int32,System.Int32)">
+            <summary>
+            Creates a Bool-based StampSet of the specified width and height. Basically creates a stamp of all true-values 
+            associated with "true" and another with all false-values associated with a "false".
+            </summary>
+            <param name="width">The number of columns for the new stamps.</param>
+            <param name="height">The number of rows for the new stamps.</param>
+            <returns>The created StampSet.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.GridUtility.DummyNodeValues``1(System.Int32,System.Int32)">
+            <summary>
+            Function that always returns 1
+            </summary>
+            <param name="i">Column index of a cell.</param>
+            <param name="j">Row index of a cell.</param>
+            <returns>The default value for the <typeparamref name="N"/>.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.GridUtility.DummyEdgeValues``1(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Function that always returns the default value
+            </summary>
+            <param name="i">Column index of a cell.</param>
+            <param name="j">Row index of a cell.</param>
+            <param name="dir">Direction of the desired edge</param>
+            <returns>The default value for the <typeparamref name="E"/>.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.OccupancyGrid">
+            <summary>
+            Implementation of Grid (an IIndexedGraph) that marks each cell as either true or false. Each
+            edge is labelled only if both cells are true.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.OccupancyGrid.GridValues">
+            <summary>
+            Get the underlying array of bool's.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.OccupancyGrid.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="width">Number of nodes in the horizontal direction.</param>
+            <param name="height">Number of nodes in the vertical direction.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.OccupancyGrid.MarkCell(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Sets the cell value.
+            </summary>
+            <param name="column">The column index.</param>
+            <param name="row">The row index.</param>
+            <param name="cellValue">The value of the cell.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.OccupancyGrid.Fill(System.Boolean)">
+            <summary>
+            Set all of the values to the specified value.
+            </summary>
+            <param name="cellValue">The value to set the cells to (true or false).</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.OccupancyGrid.Fill(System.Boolean,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Set all of the values within the specified rectangle to the specified value.
+            </summary>
+            <param name="cellValue">The value to set the cells to (true or false).</param>
+            <param name="leftColumn">The left column index to start the fill</param>
+            <param name="rightColumn">The right column index to end the fill</param>
+            <param name="bottomRow">The bottom row  index to start the fill</param>
+            <param name="topRow">The top row  index to end the fill</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.OccupancyGrid.Clear">
+            <summary>
+            Clear all of the values 9set to false).
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.OccupancyGrid.ToString">
+            <summary>
+            Returns a friendly representation of the grid.
+            </summary>
+            <returns>A string.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.OccupancyGridExtensions">
+            <summary>
+            Provides extension methods for the <c>OccupancyGrid</c> class.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.OccupancyGridExtensions.Invert(CrawfisSoftware.Collections.Graph.OccupancyGrid)">
+            <summary>
+            Extension method that takes an existing <c>OccupancyGrid</c> and returns a new one with the values inverted.
+            </summary>
+            <param name="grid">The occupancy grid to invert.</param>
+            <returns>A new <c>OccupancyGrid</c>.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.StampSet`1">
+            <summary>
+            A association of OccupancyGrids (stamps) based on some type (e.g., Direction).
+            </summary>
+            <typeparam name="TName">The type used to associate each stamp.</typeparam>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.StampSet`1.Width">
+            <summary>
+            The width of all of the stamps (OccupancyGrids)
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Collections.Graph.StampSet`1.Height">
+             <summary>
+            The height of all of the stamps (OccupancyGrids)
+             </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.StampSet`1.#ctor(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.OccupancyGrid)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="width">The width of all of the stamps.</param>
+            <param name="height">The height of all of the stamps.</param>
+            <param name="defaultStamp">The stamp to return for any unregistered stamp requests.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.StampSet`1.RegisterStamp(`0,CrawfisSoftware.Collections.Graph.OccupancyGrid)">
+            <summary>
+            Add a stamp to the collection.
+            </summary>
+            <param name="name">The value to associate with this stamp.</param>
+            <param name="stamp">The OccupancyGrid for the stamp.</param>
+            <exception cref="T:System.ArgumentException">An exception is thrown if the stamp size is wrong or the name is already associated with a stamp.</exception>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.StampSet`1.GetStamp(`0)">
+            <summary>
+            Gets a stamp associated with value passed in.
+            </summary>
+            <param name="name">The stamp id to return.</param>
+            <returns>The associated stamp if the name (or id) is registered. Otherwise the default stamp is returned.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Collections.Graph.StampSetFactory">
+            <summary>
+            Factory class for creating stamp sets for different directions and grid sizes.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.StampSetFactory.CreateStampSet3x3Bool">
+            <summary>
+            Create a 3x3 stamp set for all direction sets. All corners are closed.
+            </summary>
+            <returns>A stamp set of Direction's to OccupancyGrid's.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.StampSetFactory.CreateStampSet3x3BoolOpen">
+            <summary>
+            Create a 3x3 stamp set for all direction sets. Corners shared by two openings are open.
+            </summary>
+            <returns>A stamp set of Direction's to OccupancyGrid's.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.StampSetFactory.CreateStampSet2x2Bool">
+            <summary>
+            Create a 2x2 stamp set for all direction sets. bottom-left corner is closed.
+            </summary>
+            <returns>A stamp set of Direction's to OccupancyGrid's.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.StampSetFactory.CreateStampSetOpenNxM(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Creates a StampSet foreach Direction where the right and top edges are open if there is a passage.
+            </summary>
+            <param name="width">The width of the stamps.</param>
+            <param name="height">The heights of the stamps.</param>
+            <param name="horizontalWallThickness">The thickness of the walls. Must be less than (width-1)/2 for any passages. Width minus twice this will be the passageway width.</param>
+            <param name="verticalWallThickness">The thickness of the walls. Must be less than (height-1)/2 for any passages. Width minus twice this will be the passageway height.</param>
+            <returns>A stamp set of Direction's to OccupancyGrid's</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.StampSetFactory.CreateStampSetClosedNxM(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Creates a StampSet foreach Direction where the corners are closed off.
+            </summary>
+            <param name="width">The width of the stamps.</param>
+            <param name="height">The heights of the stamps.</param>
+            <param name="horizontalWallThickness">The thickness of the walls. Must be less than (width-1)/2 for any passages. Width minus twice this will be the passageway width.</param>
+            <param name="verticalWallThickness">The thickness of the walls. Must be less than (height-1)/2 for any passages. Width minus twice this will be the passageway height.</param>
+            <param name="doorSize">Opening size. Default is -1, which opens the entire edge.</param>
+            <returns>A stamp set of Direction's to OccupancyGrid's</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.StampSetFactory.CreateStampOpen(CrawfisSoftware.Collections.Graph.Direction,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Creates a Stamp for a specified Direction where the right and top edges are open if there is a passage.
+            </summary>
+            <param name="direction">The Direction(s) that this stamp should support.</param>
+            <param name="width">The width of the stamps.</param>
+            <param name="height">The heights of the stamps.</param>
+            <param name="horizontalWallThickness">The thickness of the walls. Must be less than (width-1)/2 for any passages. Width minus twice this will be the passageway width.</param>
+            <param name="verticalWallThickness">The thickness of the walls. Must be less than (height-1)/2 for any passages. Width minus twice this will be the passageway height.</param>
+            <returns>A stamp associated with the input Direction.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Collections.Graph.StampSetFactory.CreateStampClosed(CrawfisSoftware.Collections.Graph.Direction,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Creates a Stamp for a specified Direction where the corners are closed.
+            </summary>
+            <param name="direction">The Direction(s) that this stamp should support.</param>
+            <param name="width">The width of the stamps.</param>
+            <param name="height">The heights of the stamps.</param>
+            <param name="horizontalWallThickness">The thickness of the walls. Must be less than (width-1)/2 for any passages. Width minus twice this will be the passageway width.</param>
+            <param name="verticalWallThickness">The thickness of the walls. Must be less than (height-1)/2 for any passages. Width minus twice this will be the passageway height.</param>
+            <param name="doorSize">Opening size. Default is -1, which opens the entire edge.</param>
+            <returns>A stamp associated with the input Direction.</returns>
+        </member>
+    </members>
+</doc>

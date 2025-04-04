@@ -1,0 +1,54 @@
+{
+  "runtimeTarget": {
+    "name": ".NETStandard,Version=v2.1/",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETStandard,Version=v2.1": {},
+    ".NETStandard,Version=v2.1/": {
+      "CrawfisSoftware.Graph/1.0.0": {
+        "dependencies": {
+          "CrawfisSoftware.Collections": "1.0.0",
+          "CrawfisSoftware.IGraph": "1.0.0"
+        },
+        "runtime": {
+          "CrawfisSoftware.Graph.dll": {}
+        }
+      },
+      "CrawfisSoftware.Collections/1.0.0": {
+        "runtime": {
+          "CrawfisSoftware.Collections.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
+        }
+      },
+      "CrawfisSoftware.IGraph/1.0.0": {
+        "runtime": {
+          "CrawfisSoftware.IGraph.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "CrawfisSoftware.Graph/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CrawfisSoftware.Collections/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CrawfisSoftware.IGraph/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

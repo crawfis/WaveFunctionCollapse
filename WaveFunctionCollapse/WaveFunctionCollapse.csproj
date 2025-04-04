@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>
+    <RootNamespace>CrawfisSoftware.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <AssemblyName>CrawfisSoftware.$(MSBuildProjectName)</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="CrawfisSoftware.Collections">
+      <HintPath>..\ExternalReferences\CrawfisSoftware.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="CrawfisSoftware.Graph">
+      <HintPath>..\ExternalReferences\CrawfisSoftware.Graph.dll</HintPath>
+    </Reference>
+    <Reference Include="CrawfisSoftware.Grid">
+      <HintPath>..\ExternalReferences\CrawfisSoftware.Grid.dll</HintPath>
+    </Reference>
+    <Reference Include="CrawfisSoftware.IGraph">
+      <HintPath>..\ExternalReferences\CrawfisSoftware.IGraph.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
