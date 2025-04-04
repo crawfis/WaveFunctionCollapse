@@ -8,7 +8,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
         const int Top = 1;
         const int Right = 2;
         const int Bottom = 3;
-        private ISolver<TTile, IList<TTile>, int, int> _solver;
+        private ISolver<TTile, IList<TTile>> _solver;
         public int Id { get; }
         public bool IsCollapsed { get; private set; }
         public IList<TTile> Possibilities { get; private set; }
@@ -18,7 +18,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public WangTileConstraintNode(int id, ISolver<TTile, IList<TTile>, int, int> solver, IList<TTile> initialPossibilities, IComparer<TEdge> edgeComparer)
+        public WangTileConstraintNode(int id, ISolver<TTile, IList<TTile>> solver, IList<TTile> initialPossibilities, IComparer<TEdge> edgeComparer)
         {
             Id = id;
             IsCollapsed = false;

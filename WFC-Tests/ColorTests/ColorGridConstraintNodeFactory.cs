@@ -9,13 +9,13 @@ namespace CrawfisSoftware.WaveFunctionCollapse.Tests
     {
         private Grid<N, M> _grid;
         private Colors _initialValue;
-        private ISolver<Colors, Colors, N, M> _solver;
+        private ISolver<Colors, Colors> _solver;
         private int _initialEntropy;
         private int _nodeUpdateCount = 0;
         private int _redCount = 1;
 
         // Constructor
-        public ColorGridConstraintNodeFactory(Grid<N, M> grid, ISolver<Colors, Colors, N, M> solver, Colors initialValue, int redCount = 1)
+        public ColorGridConstraintNodeFactory(Grid<N, M> grid, ISolver<Colors, Colors> solver, Colors initialValue, int redCount = 1)
         {
             _grid = grid;
             _solver = solver;

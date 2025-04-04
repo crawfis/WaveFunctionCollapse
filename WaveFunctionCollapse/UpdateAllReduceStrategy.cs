@@ -4,23 +4,23 @@ using System.Threading.Tasks;
 
 namespace CrawfisSoftware.WaveFunctionCollapse
 {
-    public class UpdateAllReduceStrategy<T, TChoices, N, M> : IReduceStrategy<T, TChoices, N, M>
+    public class UpdateAllReduceStrategy<T, TChoices> : IReduceStrategy<T, TChoices>
     {
         public int NumberOfPropagationCalls { get; set; } = 0;
         public int NumberOfReduceCalls { get; set; } = 0;
         public int MaxRipples { get; set; } = int.MaxValue; // Instrumentation
-        public bool PostCollapse(IEnumerable<int> _, ISolver<T, TChoices, N, M> solver)
+        public bool PostCollapse(IEnumerable<int> _, ISolver<T, TChoices> solver)
         {
             return UpdateAll(solver);
         }
 
-        public bool RippleWave(int rippleNumber, ISolver<T, TChoices, N, M> solver)
+        public bool RippleWave(int rippleNumber, ISolver<T, TChoices> solver)
         {
             if (rippleNumber > MaxRipples) return false;
             return UpdateAll(solver);
         }
 
-        private bool UpdateAll(ISolver<T, TChoices, N, M> solver)
+        private bool UpdateAll(ISolver<T, TChoices> solver)
         {
             bool changed = false;
             //Parallel.ForEach(solver.Nodes, node =>

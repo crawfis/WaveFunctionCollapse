@@ -28,7 +28,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse.Tests
         private const int Height = 16;
         private static SolverType solverType = SolverType.StateBased;
         static Grid<int, int> _grid;
-        static ISolver<Colors, Colors, int, int> _solver;
+        static ISolver<Colors, Colors> _solver;
         private static int randomSeed = 1234;
 
         public static void ColorTest()
@@ -60,13 +60,16 @@ namespace CrawfisSoftware.WaveFunctionCollapse.Tests
             }
         }
 
-        private static ISolver<Colors, Colors, int, int> EventBasedSolver(Grid<int, int> grid)
+        private static ISolver<Colors, Colors> StateBasedSolver(Grid<int, int> grid)
         {
-            var solver = new SolverWithOracles<Colors, Colors, int, int>();
-            solver.OnNodeCollapsed += Solver_OnNodeCollapsed;
-            solver.OnNodeCollapseEnded += (nodeId, collapsedValue) => { if (redCount == 0) redCount = -1; };
-            solver.Initialize(_grid, new ColorGridConstraintNodeFactory<int, int>(grid, solver, allColors));
-            //solver.Initialize(_grid, allColors, new GatherNodeFactory<int, int>(grid));
+            SolverWithOracles<Colors, Colors> solver = CreateSolver(grid);
+            solver.ReduceStrategy = new UpdateAllReduceStrategy<Colors, Colors>();
+            return solver;
+        }
+
+        private static ISolver<Colors, Colors> EventBasedSolver(Grid<int, int> grid)
+        {
+            SolverWithOracles<Colors, Colors> solver = CreateSolver(grid);
             var strategy = new GraphReduceStrategy<Colors, Colors, int, int>(grid);
             solver.ReduceStrategy = strategy;
             foreach (var node in solver.Nodes)
@@ -80,37 +83,40 @@ namespace CrawfisSoftware.WaveFunctionCollapse.Tests
             return solver;
         }
 
-        static int redCount = 3;
-        private static void Solver_OnNodeCollapsed(int nodeId, Colors collapsedColor)
+        private static SolverWithOracles<Colors, Colors> CreateSolver(Grid<int, int> grid)
         {
-            if (collapsedColor == Colors.Red)
+            // Initialize nodes with possible choices.
+            SolverWithOracles<Colors, Colors> solver = new SolverWithOracles<Colors, Colors>();
+            var nodes = new List<IConstraintNode<Colors, Colors>>();
+            var _nodeFactory = new ColorGridConstraintNodeFactory<int, int>(grid, solver, allColors);
+            foreach (int nodeIndex in grid.Nodes)
             {
-                redCount--;
-                if (redCount == 0)
-                {
-                    Console.WriteLine("Red is done!");
-                }
-            }
-        }
-
-        private static ISolver<Colors, Colors, int, int> StateBasedSolver(Grid<int, int> grid)
-        {
-            var solver = new SolverWithOracles<Colors, Colors, int, int>();
-            solver.OnNodeCollapsed += Solver_OnNodeCollapsed;
-            solver.OnNodeCollapseEnded += (nodeId, collapsedValue) => { if (redCount == 0) redCount = -1; };
-            solver.Initialize(_grid, new ColorGridConstraintNodeFactory<int, int>(grid, solver, allColors, redCount));
-            //List<int> nodes = new List<int>();
-            Heap<IConstraintNode<Colors, Colors>> nodes = new Heap<IConstraintNode<Colors, Colors>>(new EntropyComparer<Colors, Colors>());
-            foreach (var node in solver.Nodes)
-            {
+                var node = _nodeFactory.Create(nodeIndex);
                 nodes.Add(node);
             }
-            //for (int i = 0; i < grid.NumberOfNodes; i++) nodes.Add(i);
-            //List<int> shuffledNodes = nodes.Shuffle().ToList();
-            //solver.NodeSelector = (index, solver) => shuffledNodes[index];
-            solver.NodeSelector = (index, solver) => nodes.RemoveRoot().Id;
-            solver.ReduceStrategy = new UpdateAllReduceStrategy<Colors, Colors, int, int>();
+
+            //solver.OnNodeCollapsed += Solver_OnNodeCollapsed;
+            solver.Initialize(nodes);
+            var heapNodes = new Heap<IConstraintNode<Colors, Colors>>(new EntropyComparer<Colors, Colors>());
+            foreach (var node in solver.Nodes)
+            {
+                heapNodes.Add(node);
+            }
+            solver.NodeSelector = (index, solver) => heapNodes.RemoveRoot().Id;
             return solver;
         }
+
+        //static int redCount = 3;
+        //private static void Solver_OnNodeCollapsed(int nodeId, Colors collapsedColor)
+        //{
+        //    if (collapsedColor == Colors.Red)
+        //    {
+        //        redCount--;
+        //        if (redCount == 0)
+        //        {
+        //            Console.WriteLine("Red is done!");
+        //        }
+        //    }
+        //}
     }
 }

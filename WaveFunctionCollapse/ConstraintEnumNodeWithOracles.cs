@@ -9,7 +9,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
     /// </summary>
     public class ConstraintEnumNodeWithOracles<T, N, M> : IConstraintEnumNode<T> where T : struct, System.Enum
     {
-        private ISolver<T, T, N, M> _solver;
+        private ISolver<T, T> _solver;
 
         public int Id { get; }
         public T Possibilities { get; private set; }
@@ -25,7 +25,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
         public CollapseDelegate<T> Collapse { get; set; } = ConstraintOracles.CollapseToFirstOption<T>;
         public Func<int, T, T> Reducer { get; set; } = ConstraintOracles.NoOpReducer<T>;
 
-        public ConstraintEnumNodeWithOracles(int nodeIndex, ISolver<T, T, N, M> solver, T initialPossibilities, int initialEntropy = 1)
+        public ConstraintEnumNodeWithOracles(int nodeIndex, ISolver<T, T> solver, T initialPossibilities, int initialEntropy = 1)
         {
             this.Id = nodeIndex;
             this._solver = solver;

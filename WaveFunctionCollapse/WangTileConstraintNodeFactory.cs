@@ -4,13 +4,13 @@ namespace CrawfisSoftware.WaveFunctionCollapse
 {
     public class WangTileConstraintNodeFactory<TEdge, TTile> : IConstraintNodeFactory<TTile, IList<TTile>> where TTile : IWangTile<TEdge>
     {
-        private ISolver<TTile, IList<TTile>, int, int> _solver;
+        private ISolver<TTile, IList<TTile>> _solver;
         private IList<TTile> _initialPossibilities;
         private IComparer<TEdge> _edgeComparer;
         private int _width;
         private int _height;
 
-        public WangTileConstraintNodeFactory(ISolver<TTile, IList<TTile>, int, int> solver, IList<TTile> initialPossibilities, IComparer<TEdge> edgeComparer, int Width, int Height)
+        public WangTileConstraintNodeFactory(ISolver<TTile, IList<TTile>> solver, IList<TTile> initialPossibilities, IComparer<TEdge> edgeComparer, int Width, int Height)
         {
             _solver = solver;
             _initialPossibilities = initialPossibilities;

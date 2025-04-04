@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CrawfisSoftware.WaveFunctionCollapse
 {
-    public class GraphReduceStrategy<T, TChoices, N, M> : IReduceStrategy<T, TChoices, N, M>
+    public class GraphReduceStrategy<T, TChoices, N, M> : IReduceStrategy<T, TChoices>
     {
         private IIndexedGraph<N, M> _graph;
         public int NumberOfPropagationCalls { get; set; } = 0;
@@ -30,7 +30,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             nodeList.Add(constraintId);
         }
 
-        public bool PostCollapse(IEnumerable<int> changedNodeIndices, ISolver<T, TChoices, N, M> solver)
+        public bool PostCollapse(IEnumerable<int> changedNodeIndices, ISolver<T, TChoices> solver)
         {
             bool changed = false;
             foreach (var changedId in changedNodeIndices)
@@ -54,7 +54,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             }
             return changed;
         }
-        public bool RippleWave(int rippleNumber, ISolver<T, TChoices, N, M> solver)
+        public bool RippleWave(int rippleNumber, ISolver<T, TChoices> solver)
         {
             bool changed = false;
             if (rippleNumber > MaxRipples) return false;

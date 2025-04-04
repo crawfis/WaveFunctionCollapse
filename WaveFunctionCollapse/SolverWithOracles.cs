@@ -5,15 +5,15 @@ using System.Collections.Generic;
 
 namespace CrawfisSoftware.WaveFunctionCollapse
 {
-    public class SolverWithOracles<T, TChoices, N, M> : ISolver<T, TChoices, N, M>
+    public class SolverWithOracles<T, TChoices> : ISolver<T, TChoices>
     {
         // Take an IIndexedGraph, and a state of the system, and iterate over the nodes to solve using Wave Function Collapse.
-        private List<IConstraintNode<T, TChoices>> _nodes = new List<IConstraintNode<T, TChoices>>();
+        private List<IConstraintNode<T, TChoices>> _nodes; // = new List<IConstraintNode<T, TChoices>>();
         private bool _stateChanged = false;
 
         public IEnumerable<IConstraintNode<T, TChoices>> Nodes { get { return _nodes; } }
-        public IReduceStrategy<T, TChoices, N, M> ReduceStrategy { get; set; }
-        public Func<int, ISolver<T, TChoices, N, M>, int> NodeSelector { get; set; }
+        public IReduceStrategy<T, TChoices> ReduceStrategy { get; set; }
+        public Func<int, ISolver<T, TChoices>, int> NodeSelector { get; set; }
 
         // Instrumentation
         public event Action<int, TChoices> OnNodeCollapseStarting;
@@ -31,14 +31,9 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             return _nodes[index];
         }
 
-        public void Initialize(IIndexedGraph<N, M> graph, IConstraintNodeFactory<T, TChoices> nodeFactory)
+        public void Initialize(List<IConstraintNode<T, TChoices>> nodes)
         {
-            // Initialize nodes with possible choices.
-            foreach (int nodeIndex in graph.Nodes)
-            {
-                var node = nodeFactory.Create(nodeIndex);
-                _nodes.Add(node);
-            }
+            _nodes = nodes;
         }
 
         public bool TrySolve(int randomSeed, int numberToCollapse = int.MaxValue)

@@ -47,7 +47,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
         private const int Width = 19;
         private const int Height = 9;
         static Grid<int, int> _grid;
-        static ISolver<TileState, IList<TileState>, int, int> _solver;
+        static ISolver<TileState, IList<TileState>> _solver;
         private static List<TileState> _tileSet;
         private static int randomSeed = 1234;
         public static void MazeTest()
@@ -210,13 +210,21 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             Console.WriteLine(sb.ToString());
         }
 
-        private static ISolver<TileState, IList<TileState>, int, int> CreateSolver(Grid<int, int> grid, ReducerType reducerType)
+        private static SolverWithOracles<TileState, IList<TileState>> CreateSolver(Grid<int, int> grid, ReducerType reducerType)
         {
-            var solver = new SolverWithOracles<TileState, IList<TileState>, int, int>();
+            // Initialize nodes with possible choices.
+            SolverWithOracles<TileState, IList<TileState>> solver = new SolverWithOracles<TileState, IList<TileState>>();
+            var nodes = new List<IConstraintNode<TileState, IList<TileState>>>();
             IList<TileState> initialChoices = GetInitialChoices();
-            var factory = CreateNodeFactory(solver, initialChoices);
-            solver.Initialize(_grid, factory);
-            //List<int> nodes = new List<int>();
+            var _nodeFactory = CreateNodeFactory(solver, initialChoices);
+            foreach (int nodeIndex in grid.Nodes)
+            {
+                var node = _nodeFactory.Create(nodeIndex);
+                nodes.Add(node);
+            }
+
+            //solver.OnNodeCollapsed += Solver_OnNodeCollapsed;
+            solver.Initialize(nodes);
             SetNodeSelector(solver);
             SetReducer(solver, reducerType);
             return solver;
@@ -227,11 +235,11 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             return _tileSet;
         }
 
-        private static void SetReducer(SolverWithOracles<TileState, IList<TileState>, int, int> solver, ReducerType reducerType)
+        private static void SetReducer(SolverWithOracles<TileState, IList<TileState>> solver, ReducerType reducerType)
         {
             if (reducerType == ReducerType.BruteForceUpdateAllNodes)
             {
-                solver.ReduceStrategy = new UpdateAllReduceStrategy<TileState, IList<TileState>, int, int>();
+                solver.ReduceStrategy = new UpdateAllReduceStrategy<TileState, IList<TileState>>();
                 //solver.ReduceStrategy = new WangTileReducerBruteForce();
                 return;
             }
@@ -246,7 +254,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             }
         }
 
-        private static void SetNodeSelector(SolverWithOracles<TileState, IList<TileState>, int, int> solver)
+        private static void SetNodeSelector(SolverWithOracles<TileState, IList<TileState>> solver)
         {
             Heap<IConstraintNode<TileState, IList<TileState>>> heapNodes = new Heap<IConstraintNode<TileState, IList<TileState>>>(new EntropyComparer<TileState, IList<TileState>>());
             foreach (var node in solver.Nodes)
@@ -256,7 +264,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             solver.NodeSelector = (index, solver) => heapNodes.RemoveRoot().Id;
         }
 
-        private static IConstraintNodeFactory<TileState, IList<TileState>> CreateNodeFactory(SolverWithOracles<TileState, IList<TileState>, int, int> solver, IList<TileState> initialChoices)
+        private static IConstraintNodeFactory<TileState, IList<TileState>> CreateNodeFactory(SolverWithOracles<TileState, IList<TileState>> solver, IList<TileState> initialChoices)
         {
             return new WangTileConstraintNodeFactory<EdgeState, TileState>(solver, initialChoices, new EdgeStateComparer(), Width, Height);
         }
