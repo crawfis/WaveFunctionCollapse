@@ -20,10 +20,15 @@ namespace CrawfisSoftware.WaveFunctionCollapse
         }
         public IConstraintNode<TTile, IList<TTile>> Create(int nodeIndex)
         {
-            var node = new WangTileConstraintNode<TEdge, TTile>(nodeIndex, _solver, _initialPossibilities, _edgeComparer);
+            WangTileConstraintNode<TEdge, TTile> node = CreateNode(nodeIndex);
             node.Width = _width;
             node.Height = _height;
             return node;
+        }
+
+        protected virtual WangTileConstraintNode<TEdge, TTile> CreateNode(int nodeIndex)
+        {
+            return new WangTileConstraintNode<TEdge, TTile>(nodeIndex, _solver, _initialPossibilities, _edgeComparer);
         }
     }
 }

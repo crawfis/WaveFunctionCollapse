@@ -45,11 +45,11 @@ namespace CrawfisSoftware.WaveFunctionCollapse
 
 
         private const int Width = 19;
-        private const int Height = 9;
+        private const int Height = 13;
         static Grid<int, int> _grid;
         static ISolver<TileState, IList<TileState>> _solver;
         private static List<TileState> _tileSet;
-        private static int randomSeed = 1234;
+        private static int randomSeed = 876;
         public static void MazeTest()
         {
             Console.WriteLine("Hello WFC World! A non-sensical maze for you");
@@ -101,6 +101,148 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             Console.WriteLine($"{_solver.ReduceStrategy.NumberOfPropagationCalls} nodes were visited.");
             Console.WriteLine($"{_solver.ReduceStrategy.NumberOfReduceCalls} nodes were reduced.");
             PrintSolution();
+        }
+
+        private static SolverWithOracles<TileState, IList<TileState>> CreateSolver(Grid<int, int> grid, ReducerType reducerType)
+        {
+            // Initialize nodes with possible choices.
+            SolverWithOracles<TileState, IList<TileState>> solver = new SolverWithOracles<TileState, IList<TileState>>();
+            var nodes = new List<IConstraintNode<TileState, IList<TileState>>>();
+            IList<TileState> initialChoices = GetInitialChoices();
+            var _nodeFactory = CreateNodeFactory(solver, initialChoices);
+            foreach (int nodeIndex in grid.Nodes)
+            {
+                var node = _nodeFactory.Create(nodeIndex);
+                // Perform initial reduction
+                RestrictTopEdge(node as WangTileConstraintNode<EdgeState, TileState>);
+                RestrictBottomEdge(node as WangTileConstraintNode<EdgeState, TileState>);
+                nodes.Add(node);
+            }
+            //solver.OnNodeCollapsed += Solver_OnNodeCollapsed;
+            solver.Initialize(nodes);
+            SetNodeSelector(solver);
+            SetReducer(solver, reducerType);
+            //solver.RippleWaveCompleted += Solver_RippleWaveCompleted;
+            Console.WriteLine("Solver created. Starting initial reduction.");
+            bool reducing = true;
+            int loopCount = 0;
+            while (reducing)
+            {
+                reducing = false;
+                loopCount++;
+                foreach (var node in nodes)
+                {
+                    if (node.Reduce()) reducing = true;
+                }
+                Console.WriteLine($"Loop {loopCount} completed.");
+                reducing = false;
+            }
+            Console.WriteLine("System is ready to solve.");
+            return solver;
+        }
+
+        private static void Solver_RippleWaveCompleted(int arg1)
+        {
+            var distinctEdgeHeights = _solver.Nodes
+                .SelectMany(node => node.Possibilities)
+                .SelectMany(tile => tile.edges)
+                .Select(edge => edge.edgeHeight)
+                .Distinct()
+                .Count();
+
+            Console.WriteLine($"Number of distinct EdgeHeights: {distinctEdgeHeights}  after ripple {arg1}");
+            //var possibilities = _solver.Nodes
+            //        .Select(node => node.Possibilities).ToArray();
+            //var tiles = possibilities.Select(tile => (tile as TileState).edges[1]).ToArray();
+            //var topHeights = tiles.Select(edge => edge.edgeHeight)
+            //        .Distinct()
+            //        .Count();
+
+            ////.edges[1].edgeHeight)
+            ////.Distinct()
+            ////.Count();
+            //var bottomHeights = _solver.Nodes
+            //        .Select(node => node.Possibilities)
+            //        .Select(tile => (tile as TileState).edges[3].edgeHeight)
+            //        .Distinct()
+            //        .Count();
+            //Console.WriteLine($"Top heights: {topHeights} Bottom heights: {bottomHeights}");
+        }
+
+        private static bool RestrictTopEdge(WangTileConstraintNode<EdgeState, TileState> constrainedWangTile)
+        {
+            bool reduced = false;
+            if ((constrainedWangTile.Id / constrainedWangTile.Width) == 0)
+            {
+                for (int i = constrainedWangTile.Possibilities.Count - 1; i >= 0; i--)
+                {
+                    var possibility = constrainedWangTile.Possibilities[i];
+                    var edge = possibility[Top];
+                    if (edge.edgeHeight == EdgeHeight.Impassible)
+                        continue;
+                    reduced = true;
+                    constrainedWangTile.Possibilities.RemoveAt(i);
+                }
+            }
+            return reduced;
+        }
+
+        private static bool RestrictBottomEdge(WangTileConstraintNode<EdgeState, TileState> constrainedWangTile)
+        {
+            bool reduced = false;
+            if ((constrainedWangTile.Id / constrainedWangTile.Width) == constrainedWangTile.Height - 1)
+            {
+                for (int i = constrainedWangTile.Possibilities.Count - 1; i >= 0; i--)
+                {
+                    var possibility = constrainedWangTile.Possibilities[i];
+                    var edge = possibility[Bottom];
+                    if (edge.edgeHeight == EdgeHeight.Low)
+                        continue;
+                    reduced = true;
+                    constrainedWangTile.Possibilities.RemoveAt(i);
+                }
+            }
+            return reduced;
+        }
+
+        private static IList<TileState> GetInitialChoices()
+        {
+            return _tileSet;
+        }
+
+        private static void SetReducer(SolverWithOracles<TileState, IList<TileState>> solver, ReducerType reducerType)
+        {
+            if (reducerType == ReducerType.BruteForceUpdateAllNodes)
+            {
+                solver.ReduceStrategy = new UpdateAllReduceStrategy<TileState, IList<TileState>>();
+                //solver.ReduceStrategy = new WangTileReducerBruteForce();
+                return;
+            }
+            var strategy = new GraphReduceStrategy<TileState, IList<TileState>, int, int>(_grid);
+            //strategy.MaxRipples = 5;
+            solver.ReduceStrategy = strategy;
+            foreach (var node in solver.Nodes)
+            {
+                foreach (var neighbor in _grid.Neighbors(node.Id))
+                {
+                    strategy.AddGraphConstraint(node.Id, neighbor);
+                }
+            }
+        }
+
+        private static void SetNodeSelector(SolverWithOracles<TileState, IList<TileState>> solver)
+        {
+            Heap<IConstraintNode<TileState, IList<TileState>>> heapNodes = new Heap<IConstraintNode<TileState, IList<TileState>>>(new EntropyComparer<TileState, IList<TileState>>());
+            foreach (var node in solver.Nodes)
+            {
+                heapNodes.Add(node);
+            }
+            solver.NodeSelector = (index, solver) => heapNodes.RemoveRoot().Id;
+        }
+
+        private static IConstraintNodeFactory<TileState, IList<TileState>> CreateNodeFactory(SolverWithOracles<TileState, IList<TileState>> solver, IList<TileState> initialChoices)
+        {
+            return new WangTileConstraintNodeFactory<EdgeState, TileState>(solver, initialChoices, new EdgeStateComparer(), Width, Height);
         }
 
         private static void PrintSolution()
@@ -208,65 +350,6 @@ namespace CrawfisSoftware.WaveFunctionCollapse
                 sb.Append(horizontalBar); sb.Append(value: "|");
             }
             Console.WriteLine(sb.ToString());
-        }
-
-        private static SolverWithOracles<TileState, IList<TileState>> CreateSolver(Grid<int, int> grid, ReducerType reducerType)
-        {
-            // Initialize nodes with possible choices.
-            SolverWithOracles<TileState, IList<TileState>> solver = new SolverWithOracles<TileState, IList<TileState>>();
-            var nodes = new List<IConstraintNode<TileState, IList<TileState>>>();
-            IList<TileState> initialChoices = GetInitialChoices();
-            var _nodeFactory = CreateNodeFactory(solver, initialChoices);
-            foreach (int nodeIndex in grid.Nodes)
-            {
-                var node = _nodeFactory.Create(nodeIndex);
-                nodes.Add(node);
-            }
-
-            //solver.OnNodeCollapsed += Solver_OnNodeCollapsed;
-            solver.Initialize(nodes);
-            SetNodeSelector(solver);
-            SetReducer(solver, reducerType);
-            return solver;
-        }
-
-        private static IList<TileState> GetInitialChoices()
-        {
-            return _tileSet;
-        }
-
-        private static void SetReducer(SolverWithOracles<TileState, IList<TileState>> solver, ReducerType reducerType)
-        {
-            if (reducerType == ReducerType.BruteForceUpdateAllNodes)
-            {
-                solver.ReduceStrategy = new UpdateAllReduceStrategy<TileState, IList<TileState>>();
-                //solver.ReduceStrategy = new WangTileReducerBruteForce();
-                return;
-            }
-            var strategy = new GraphReduceStrategy<TileState, IList<TileState>, int, int>(_grid);
-            solver.ReduceStrategy = strategy;
-            foreach (var node in solver.Nodes)
-            {
-                foreach (var neighbor in _grid.Neighbors(node.Id))
-                {
-                    strategy.AddGraphConstraint(node.Id, neighbor);
-                }
-            }
-        }
-
-        private static void SetNodeSelector(SolverWithOracles<TileState, IList<TileState>> solver)
-        {
-            Heap<IConstraintNode<TileState, IList<TileState>>> heapNodes = new Heap<IConstraintNode<TileState, IList<TileState>>>(new EntropyComparer<TileState, IList<TileState>>());
-            foreach (var node in solver.Nodes)
-            {
-                heapNodes.Add(node);
-            }
-            solver.NodeSelector = (index, solver) => heapNodes.RemoveRoot().Id;
-        }
-
-        private static IConstraintNodeFactory<TileState, IList<TileState>> CreateNodeFactory(SolverWithOracles<TileState, IList<TileState>> solver, IList<TileState> initialChoices)
-        {
-            return new WangTileConstraintNodeFactory<EdgeState, TileState>(solver, initialChoices, new EdgeStateComparer(), Width, Height);
         }
     }
 }

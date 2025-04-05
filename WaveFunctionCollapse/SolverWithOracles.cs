@@ -20,6 +20,8 @@ namespace CrawfisSoftware.WaveFunctionCollapse
         public event Action<int, T> OnNodeCollapseEnded;
         public event Action<int, T> OnNodeCollapsed;
         public event Action<int, TChoices> OnNodeChanged;
+        public event Action<int> RippleWaveCompleted;
+        public event Action<int, TChoices> AllRipplesCompleted;
 
         public TChoices GetNodeValues(int index)
         {
@@ -70,6 +72,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             int rippleCount = 0;
             while (ReduceStrategy.RippleWave(rippleCount, this))
             {
+                RippleWaveCompleted?.Invoke(rippleCount);
                 rippleCount++;
             }
         }

@@ -4,10 +4,10 @@ namespace CrawfisSoftware.WaveFunctionCollapse
 {
     public class WangTileConstraintNode<TEdge, TTile> : IConstraintListNode<TTile> where TTile : IWangTile<TEdge>
     {
-        const int Left = 0;
-        const int Top = 1;
-        const int Right = 2;
-        const int Bottom = 3;
+        public const int Left = 0;
+        public const int Top = 1;
+        public const int Right = 2;
+        public const int Bottom = 3;
         private ISolver<TTile, IList<TTile>> _solver;
         public int Id { get; }
         public bool IsCollapsed { get; private set; }
@@ -33,7 +33,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             if (Possibilities.Count == 0)
             {
                 // Todo: Notify the solver that this node has no possibilities left
-                throw new System.ApplicationException($"Node {Id} has no possibilities left");
+                //throw new System.ApplicationException($"Node {Id} has no possibilities left");
                 collapsedValue = default;
                 return false;
             }
@@ -85,6 +85,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
 
         protected virtual bool ValidateTileChoice(TTile possibility)
         {
+            //return true;
             var leftEdge = possibility[Left];
             var topEdge = possibility[Top];
             var rightEdge = possibility[Right];

@@ -44,65 +44,65 @@ namespace CrawfisSoftware.WaveFunctionCollapse
                     }
                 }
             }
-            EdgeState overPassLow = new EdgeState() { edgeHeight = EdgeHeight.Low, pathStyle = PathStyle.Overpass };
-            EdgeState overPassMid = new EdgeState() { edgeHeight = EdgeHeight.Mid, pathStyle = PathStyle.Overpass };
-            EdgeState noPathLow = new EdgeState() { edgeHeight = EdgeHeight.Low, pathStyle = PathStyle.None };
-            EdgeState noPathMid = new EdgeState() { edgeHeight = EdgeHeight.Mid, pathStyle = PathStyle.None };
-            EdgeState waterLow = new EdgeState() { edgeHeight = EdgeHeight.Low, pathStyle = PathStyle.Water };
-            EdgeState waterMid = new EdgeState() { edgeHeight = EdgeHeight.Mid, pathStyle = PathStyle.Water };
-            EdgeState roadLow = new EdgeState() { edgeHeight = EdgeHeight.Low, pathStyle = PathStyle.Road };
-            EdgeState roadMid = new EdgeState() { edgeHeight = EdgeHeight.Mid, pathStyle = PathStyle.Road };
-            var overpassTile = new TileState() { edges = new EdgeState[4] { overPassLow, noPathLow, overPassLow, noPathLow } };
-            tileSet.Add(overpassTile);
-            overpassTile = new TileState() { edges = new EdgeState[4] { overPassLow, noPathLow, roadLow, noPathLow } };
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            overpassTile = new TileState() { edges = new EdgeState[4] { overPassLow, noPathLow, roadLow, roadLow } };
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            overpassTile = new TileState() { edges = new EdgeState[4] { roadLow, roadLow, overPassLow, noPathLow } };
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            tileSet.Add(overpassTile);
-            overpassTile = new TileState() { edges = new EdgeState[4] { overPassLow, noPathLow, roadLow, noPathMid } };
-            tileSet.Add(overpassTile);
-            overpassTile = new TileState() { edges = new EdgeState[4] { overPassMid, noPathMid, overPassMid, noPathMid } };
-            tileSet.Add(overpassTile);
-            overpassTile = new TileState() { edges = new EdgeState[4] { overPassMid, noPathMid, roadMid, noPathMid } };
-            tileSet.Add(overpassTile);
-            overpassTile = new TileState() { edges = new EdgeState[4] { roadMid, noPathMid, overPassMid, noPathMid } };
-            tileSet.Add(overpassTile);
-            overpassTile = new TileState() { edges = new EdgeState[4] { noPathLow, overPassLow, noPathLow, overPassLow } };
-            tileSet.Add(overpassTile);
-            overpassTile = new TileState() { edges = new EdgeState[4] { noPathMid, overPassMid, noPathMid, overPassMid } };
-            tileSet.Add(overpassTile);
-            overpassTile = new TileState() { edges = new EdgeState[4] { noPathMid, overPassMid, noPathMid, roadMid } };
-            tileSet.Add(overpassTile);
-            overpassTile = new TileState() { edges = new EdgeState[4] { overPassLow, waterLow, overPassLow, waterLow } };
-            tileSet.Add(overpassTile);
-            overpassTile = new TileState() { edges = new EdgeState[4] { overPassMid, waterMid, overPassMid, waterMid } };
-            tileSet.Add(overpassTile);
-            overpassTile = new TileState() { edges = new EdgeState[4] { waterLow, overPassLow, waterLow, overPassLow } };
-            tileSet.Add(overpassTile);
-            overpassTile = new TileState() { edges = new EdgeState[4] { waterMid, overPassMid, waterMid, overPassMid } };
-            tileSet.Add(overpassTile);
+            //EdgeState overPassLow = new EdgeState() { edgeHeight = EdgeHeight.Low, pathStyle = PathStyle.Overpass };
+            //EdgeState overPassMid = new EdgeState() { edgeHeight = EdgeHeight.Mid, pathStyle = PathStyle.Overpass };
+            //EdgeState noPathLow = new EdgeState() { edgeHeight = EdgeHeight.Low, pathStyle = PathStyle.None };
+            //EdgeState noPathMid = new EdgeState() { edgeHeight = EdgeHeight.Mid, pathStyle = PathStyle.None };
+            //EdgeState waterLow = new EdgeState() { edgeHeight = EdgeHeight.Low, pathStyle = PathStyle.Water };
+            //EdgeState waterMid = new EdgeState() { edgeHeight = EdgeHeight.Mid, pathStyle = PathStyle.Water };
+            //EdgeState roadLow = new EdgeState() { edgeHeight = EdgeHeight.Low, pathStyle = PathStyle.Road };
+            //EdgeState roadMid = new EdgeState() { edgeHeight = EdgeHeight.Mid, pathStyle = PathStyle.Road };
+            //var overpassTile = new TileState() { edges = new EdgeState[4] { overPassLow, noPathLow, overPassLow, noPathLow } };
+            //tileSet.Add(overpassTile);
+            //overpassTile = new TileState() { edges = new EdgeState[4] { overPassLow, noPathLow, roadLow, noPathLow } };
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //overpassTile = new TileState() { edges = new EdgeState[4] { overPassLow, noPathLow, roadLow, roadLow } };
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //overpassTile = new TileState() { edges = new EdgeState[4] { roadLow, roadLow, overPassLow, noPathLow } };
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //tileSet.Add(overpassTile);
+            //overpassTile = new TileState() { edges = new EdgeState[4] { overPassLow, noPathLow, roadLow, noPathMid } };
+            //tileSet.Add(overpassTile);
+            //overpassTile = new TileState() { edges = new EdgeState[4] { overPassMid, noPathMid, overPassMid, noPathMid } };
+            //tileSet.Add(overpassTile);
+            //overpassTile = new TileState() { edges = new EdgeState[4] { overPassMid, noPathMid, roadMid, noPathMid } };
+            //tileSet.Add(overpassTile);
+            //overpassTile = new TileState() { edges = new EdgeState[4] { roadMid, noPathMid, overPassMid, noPathMid } };
+            //tileSet.Add(overpassTile);
+            //overpassTile = new TileState() { edges = new EdgeState[4] { noPathLow, overPassLow, noPathLow, overPassLow } };
+            //tileSet.Add(overpassTile);
+            //overpassTile = new TileState() { edges = new EdgeState[4] { noPathMid, overPassMid, noPathMid, overPassMid } };
+            //tileSet.Add(overpassTile);
+            //overpassTile = new TileState() { edges = new EdgeState[4] { noPathMid, overPassMid, noPathMid, roadMid } };
+            //tileSet.Add(overpassTile);
+            //overpassTile = new TileState() { edges = new EdgeState[4] { overPassLow, waterLow, overPassLow, waterLow } };
+            //tileSet.Add(overpassTile);
+            //overpassTile = new TileState() { edges = new EdgeState[4] { overPassMid, waterMid, overPassMid, waterMid } };
+            //tileSet.Add(overpassTile);
+            //overpassTile = new TileState() { edges = new EdgeState[4] { waterLow, overPassLow, waterLow, overPassLow } };
+            //tileSet.Add(overpassTile);
+            //overpassTile = new TileState() { edges = new EdgeState[4] { waterMid, overPassMid, waterMid, overPassMid } };
+            //tileSet.Add(overpassTile);
 
 
             Console.WriteLine($"edgeStates.Count = {edgeStates.Count}");
@@ -113,6 +113,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
 
         private static bool ValidateTile(TileState tileCandidate)
         {
+            //return true;
             var leftEdge = tileCandidate.edges[Left];
             var topEdge = tileCandidate.edges[Top];
             var rightEdge = tileCandidate.edges[Right];
@@ -145,18 +146,21 @@ namespace CrawfisSoftware.WaveFunctionCollapse
                 if (tileCandidate.edges[i].edgeHeight == EdgeHeight.High) highCount++;
                 if (tileCandidate.edges[i].edgeHeight == EdgeHeight.Impassible) impassibleCount++;
             }
-            int maxHeightCount = Math.Max(Math.Max(Math.Max(lowCount, midCount), highCount), impassibleCount);
-            if (overpassCount > 0 && maxHeightCount != 4) return false;
-            if (dirtCount > 2 || waterCount > 2 || overpassCount == 3 || overpassCount == 4) return false;
-            if (roadCount > 0 && roadCount + overpassCount + noPathCount != 4) return false;
-            if (dirtCount > 0 && dirtCount + roadCount + noPathCount != 4) return false;
-            if (waterCount == 1 && !direction.IsDeadEnd()) return false;
+            //int maxHeightCount = Math.Max(Math.Max(Math.Max(lowCount, midCount), highCount), impassibleCount);
+            //if (overpassCount > 0 && maxHeightCount != 4) return false;
+            //if (dirtCount > 2 || waterCount > 2 || overpassCount == 3 || overpassCount == 4) return false;
+            //if (roadCount > 0 && roadCount + overpassCount + noPathCount != 4) return false;
+            //if (dirtCount > 0 && dirtCount + roadCount + noPathCount != 4) return false;
+            //if (waterCount == 1 && !direction.IsDeadEnd()) return false;
             //if (waterCount == 2)
             //if (overpassCount == 2 && (waterCount != 2 || roadCount != 2 || noPathCount !=2)) return false;
+            bool smallSlope = false;
+            if (impassibleCount > 0 && ((impassibleCount + highCount) == 4)) smallSlope = true;
+            else if (highCount > 0 && (highCount + midCount == 4)) smallSlope = true;
+            else if (midCount > 0 && (midCount + lowCount == 4)) smallSlope = true;
+            if (!smallSlope) return false;
 
-            if (impassibleCount > 0 && ((impassibleCount + highCount) != 4)) return false;
-            if (highCount > 0 && highCount + midCount != 4) return false;
-            if (midCount > 0 && midCount + lowCount != 4) return false;
+
             // Overpass paths can only be straights.
             if (direction.IsStraight() && leftEdge.pathStyle == PathStyle.Overpass && (!(rightEdge.pathStyle == PathStyle.Overpass) || (rightEdge.pathStyle == PathStyle.Road))) return false;
             if (direction.IsStraight() && rightEdge.pathStyle == PathStyle.Overpass && (!(leftEdge.pathStyle == PathStyle.Overpass) || (leftEdge.pathStyle == PathStyle.Road))) return false;
@@ -171,11 +175,13 @@ namespace CrawfisSoftware.WaveFunctionCollapse
 
         private static bool ValidEdgeState(EdgeState candidate)
         {
-            //if (candidate.pathStyle == PathStyle.Overpass) return false;
-            //if (candidate.pathStyle == PathStyle.Dirt) return false;
+            //if (candidate.pathStyle != PathStyle.None) return false;
+
+            if (candidate.pathStyle == PathStyle.Overpass) return false;
+            if (candidate.pathStyle == PathStyle.Dirt) return false;
             //if (candidate.edgeHeight == EdgeHeight.Impassible) return false;
             //if (candidate.edgeHeight == EdgeHeight.High) return false;
-            //if (candidate.pathStyle == PathStyle.Water) return false;
+            if (candidate.pathStyle == PathStyle.Water) return false;
             // No paths allowed on Impassible edges
             if (candidate.edgeHeight == EdgeHeight.Impassible && candidate.pathStyle != PathStyle.None) return false;
             // No overpasses on High or Impassible edges
