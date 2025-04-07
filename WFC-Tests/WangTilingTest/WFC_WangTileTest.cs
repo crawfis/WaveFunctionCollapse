@@ -120,7 +120,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             }
             //solver.OnNodeCollapsed += Solver_OnNodeCollapsed;
             solver.Initialize(nodes);
-            SetNodeSelectorHeap(solver);
+            SetNodeSelector(solver);
             SetReducer(solver, reducerType);
             //solver.RippleWaveCompleted += Solver_RippleWaveCompleted;
             Console.WriteLine("Solver created. Starting initial reduction.");
