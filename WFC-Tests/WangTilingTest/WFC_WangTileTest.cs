@@ -120,7 +120,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             }
             //solver.OnNodeCollapsed += Solver_OnNodeCollapsed;
             solver.Initialize(nodes);
-            SetNodeSelector(solver);
+            SetNodeSelectorHeap(solver);
             SetReducer(solver, reducerType);
             //solver.RippleWaveCompleted += Solver_RippleWaveCompleted;
             Console.WriteLine("Solver created. Starting initial reduction.");
@@ -255,14 +255,27 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             solver.NodeSelector = FindMinEntropy;
         }
 
+        private static Heap<IConstraintNode<TileState, IList<TileState>>> _entropyHeap;
         private static void SetNodeSelectorHeap(SolverWithOracles<TileState, IList<TileState>> solver)
         {
-            Heap<IConstraintNode<TileState, IList<TileState>>> heapNodes = new Heap<IConstraintNode<TileState, IList<TileState>>>(new EntropyComparer<TileState, IList<TileState>>());
+            _entropyHeap = new Heap<IConstraintNode<TileState, IList<TileState>>>(new EntropyComparer<TileState, IList<TileState>>());
+            solver.OnPropagateEnding += (s) =>
+            {
+                RefreshHeap(solver);
+            };
+            RefreshHeap(solver);
+            solver.NodeSelector = (index, solver) => _entropyHeap.RemoveRoot().Id;
+        }
+
+        private static void RefreshHeap(SolverWithOracles<TileState, IList<TileState>> solver)
+        {
+            _entropyHeap.Clear();
             foreach (var node in solver.Nodes)
             {
-                heapNodes.Add(node);
+                if (node.IsCollapsed)
+                    continue;
+                _entropyHeap.Add(node);
             }
-            solver.NodeSelector = (index, solver) => heapNodes.RemoveRoot().Id;
         }
 
         private static IConstraintNodeFactory<TileState, IList<TileState>> CreateNodeFactory(SolverWithOracles<TileState, IList<TileState>> solver, IList<TileState> initialChoices)
