@@ -1,6 +1,4 @@
-﻿using CrawfisSoftware.Collections.Graph;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace CrawfisSoftware.WaveFunctionCollapse
@@ -11,8 +9,8 @@ namespace CrawfisSoftware.WaveFunctionCollapse
         IEnumerable<IConstraintNode<T, TChoices>> Nodes { get; }
         public IReduceStrategy<T, TChoices> ReduceStrategy { get; set; }
 
-        event Action<int, T> OnNodeCollapseEnded;
         event Action<int, TChoices> OnNodeCollapseStarting;
+        event Action<int, T> OnNodeCollapseEnded;
 
         TChoices GetNodeValues(int index);
         void Initialize(List<IConstraintNode<T, TChoices>> constraintNodes);

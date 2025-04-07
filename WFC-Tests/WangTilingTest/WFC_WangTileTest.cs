@@ -230,7 +230,32 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             }
         }
 
+        private static int FindMinEntropy(int index, ISolver<TileState, IList<TileState>> solver)
+        {
+            int minIndex = -1;
+            int minEntropy = int.MaxValue;
+            foreach (var node in solver.Nodes)
+            {
+                if (node.IsCollapsed)
+                    continue;
+                int entropy = node.Entropy;
+                if (entropy < minEntropy)
+                {
+                    minIndex = node.Id;
+                }
+                if (entropy == minEntropy)
+                {
+                    // Need a random to decide which index to keep.
+                }
+            }
+            return minIndex;
+        }
         private static void SetNodeSelector(SolverWithOracles<TileState, IList<TileState>> solver)
+        {
+            solver.NodeSelector = FindMinEntropy;
+        }
+
+        private static void SetNodeSelectorHeap(SolverWithOracles<TileState, IList<TileState>> solver)
         {
             Heap<IConstraintNode<TileState, IList<TileState>>> heapNodes = new Heap<IConstraintNode<TileState, IList<TileState>>>(new EntropyComparer<TileState, IList<TileState>>());
             foreach (var node in solver.Nodes)

@@ -5,6 +5,14 @@ using System.Collections.Generic;
 
 namespace CrawfisSoftware.WaveFunctionCollapse
 {
+    // Designed with the NMP design philosophy in mind: Not-My-Problem :-)
+    // Removes any concerns about the following:
+    // 1. How to select the next node to collapse
+    // 2. How to propagate the changes to the other nodes
+    // 3. How to reduce the possibilities of the other nodes
+    // 4. How / when to update Entropy
+    // 5. How to handle failure cases.
+    // Adds several events to allow the user to hook into the process
     public class SolverWithOracles<T, TChoices> : ISolver<T, TChoices>
     {
         // Take an IIndexedGraph, and a state of the system, and iterate over the nodes to solve using Wave Function Collapse.
@@ -19,9 +27,10 @@ namespace CrawfisSoftware.WaveFunctionCollapse
         public event Action<int, TChoices> OnNodeCollapseStarting;
         public event Action<int, T> OnNodeCollapseEnded;
         public event Action<int, T> OnNodeCollapsed;
-        public event Action<int, TChoices> OnNodeChanged;
+        public event Action<int> OnNodeChanged;
         public event Action<int> RippleWaveCompleted;
-        public event Action<int, TChoices> AllRipplesCompleted;
+        public event Action<ISolver<T, TChoices>> OnPropagateStarting;
+        public event Action<ISolver<T, TChoices>> OnPropagateEnding;
 
         public TChoices GetNodeValues(int index)
         {
@@ -57,12 +66,16 @@ namespace CrawfisSoftware.WaveFunctionCollapse
                 {
                     OnNodeCollapsed?.Invoke(node.Id, collapsedValue);
                     _stateChanged = true;
-                    OnNodeCollapseEnded?.Invoke(node.Id, collapsedValue);
                 }
+                OnNodeCollapseEnded?.Invoke(node.Id, collapsedValue);
+                // Fire event that Propagate is starting
+                OnPropagateStarting?.Invoke(this);
                 if (_stateChanged && ReduceStrategy.PostCollapse(new List<int> { node.Id }, this))
                 {
                     Propagate();
                 }
+                // Fire event that Propagate is completed
+                OnPropagateEnding?.Invoke(this);
             }
             return i == _nodes.Count;
         }
@@ -80,6 +93,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
         public void NodeUpdated(int id)
         {
             _stateChanged = true;
+            OnNodeChanged?.Invoke(id);
         }
     }
 }
