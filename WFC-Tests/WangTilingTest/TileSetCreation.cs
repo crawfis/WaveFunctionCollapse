@@ -160,6 +160,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             else if (midCount > 0 && (midCount + lowCount == 4)) smallSlope = true;
             if (!smallSlope) return false;
 
+            return true;
 
             // Overpass paths can only be straights.
             if (direction.IsStraight() && leftEdge.pathStyle == PathStyle.Overpass && (!(rightEdge.pathStyle == PathStyle.Overpass) || (rightEdge.pathStyle == PathStyle.Road))) return false;
@@ -175,13 +176,15 @@ namespace CrawfisSoftware.WaveFunctionCollapse
 
         private static bool ValidEdgeState(EdgeState candidate)
         {
-            //if (candidate.pathStyle != PathStyle.None) return false;
+            //if ((candidate.pathStyle == PathStyle.None || candidate.pathStyle == PathStyle.Road) && candidate.edgeHeight == EdgeHeight.Low) return true;
+            //return false;
 
-            if (candidate.pathStyle == PathStyle.Overpass) return false;
-            if (candidate.pathStyle == PathStyle.Dirt) return false;
+            //if (candidate.pathStyle == PathStyle.Overpass) return false;
+            //if (candidate.pathStyle == PathStyle.Dirt) return false;
             //if (candidate.edgeHeight == EdgeHeight.Impassible) return false;
             //if (candidate.edgeHeight == EdgeHeight.High) return false;
-            if (candidate.pathStyle == PathStyle.Water) return false;
+            //if (candidate.pathStyle == PathStyle.Water) return false;
+
             // No paths allowed on Impassible edges
             if (candidate.edgeHeight == EdgeHeight.Impassible && candidate.pathStyle != PathStyle.None) return false;
             // No overpasses on High or Impassible edges

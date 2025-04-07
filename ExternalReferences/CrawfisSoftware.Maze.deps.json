@@ -1,0 +1,107 @@
+{
+  "runtimeTarget": {
+    "name": ".NETStandard,Version=v2.1/",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETStandard,Version=v2.1": {},
+    ".NETStandard,Version=v2.1/": {
+      "CrawfisSoftware.Maze/1.0.0": {
+        "dependencies": {
+          "CrawfisSoftware.Collections": "1.0.0",
+          "CrawfisSoftware.Graph": "1.0.0",
+          "CrawfisSoftware.Grid": "1.0.0",
+          "CrawfisSoftware.IGraph": "1.0.0",
+          "CrawfisSoftware.Path": "1.0.0"
+        },
+        "runtime": {
+          "CrawfisSoftware.Maze.dll": {}
+        }
+      },
+      "CrawfisSoftware.Collections/1.0.0": {
+        "runtime": {
+          "CrawfisSoftware.Collections.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
+        }
+      },
+      "CrawfisSoftware.Graph/1.0.0": {
+        "dependencies": {
+          "CrawfisSoftware.Collections": "1.0.0",
+          "CrawfisSoftware.IGraph": "1.0.0"
+        },
+        "runtime": {
+          "CrawfisSoftware.Graph.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
+        }
+      },
+      "CrawfisSoftware.Grid/1.0.0": {
+        "dependencies": {
+          "CrawfisSoftware.Graph": "1.0.0",
+          "CrawfisSoftware.IGraph": "1.0.0"
+        },
+        "runtime": {
+          "CrawfisSoftware.Grid.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
+        }
+      },
+      "CrawfisSoftware.IGraph/1.0.0": {
+        "runtime": {
+          "CrawfisSoftware.IGraph.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
+        }
+      },
+      "CrawfisSoftware.Path/1.0.0": {
+        "dependencies": {
+          "CrawfisSoftware.Grid": "1.0.0"
+        },
+        "runtime": {
+          "CrawfisSoftware.Path.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "CrawfisSoftware.Maze/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CrawfisSoftware.Collections/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CrawfisSoftware.Graph/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CrawfisSoftware.Grid/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CrawfisSoftware.IGraph/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CrawfisSoftware.Path/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -5,6 +5,8 @@ using CrawfisSoftware.WaveFunctionCollapse.Tests;
 using System.Diagnostics;
 using System.Text;
 
+using WFC_Tests.MazeTest;
+
 namespace CrawfisSoftware.WaveFunctionCollapse
 {
     enum ReducerType
@@ -38,10 +40,10 @@ namespace CrawfisSoftware.WaveFunctionCollapse
     }
     public partial class WFC_WangTileTest
     {
-        const int Left = 0;
-        const int Top = 1;
-        const int Right = 2;
-        const int Bottom = 3;
+        public const int Left = 0;
+        public const int Top = 1;
+        public const int Right = 2;
+        public const int Bottom = 3;
 
 
         private const int Width = 19;
@@ -78,33 +80,35 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             Console.WriteLine($"Only {tilesUsed} tiles were used out of {_tileSet.Count} tiles in the set.");
             Console.WriteLine($"{_solver.ReduceStrategy.NumberOfPropagationCalls} nodes were visited.");
             Console.WriteLine($"{_solver.ReduceStrategy.NumberOfReduceCalls} nodes were reduced.");
-            PrintSolution();
+            WFC_WangTilePrinter.PrintTiling(_solver, Width, Height);
 
-            Console.WriteLine();
-            Console.WriteLine("Now using brute-force solver");
-            _solver = CreateSolver(_grid, ReducerType.BruteForceUpdateAllNodes);
+            //Console.WriteLine();
+            //Console.WriteLine("Now using brute-force solver");
+            //_solver = CreateSolver(_grid, ReducerType.BruteForceUpdateAllNodes);
 
-            stopwatch = new Stopwatch();
-            stopwatch.Start();
-            solved = _solver.TrySolve(randomSeed, Width * Height);
-            stopwatch.Stop();
-            elapsed = stopwatch.Elapsed;
+            //stopwatch = new Stopwatch();
+            //stopwatch.Start();
+            //solved = _solver.TrySolve(randomSeed, Width * Height);
+            //stopwatch.Stop();
+            //elapsed = stopwatch.Elapsed;
 
-            tilesUsed = _solver.Nodes
-                    .Where(node => node.IsCollapsed)
-                    .Select(node => node.CollapsedValue)
-                    .Distinct()
-                    .Count();
-            Console.Write($"Brute-Force Solver took {elapsed.Seconds} seconds to solve.");
-            Console.WriteLine($"Grid size is {Width} x {Height} = {Width * Height} tiles.");
-            Console.WriteLine($"Only {tilesUsed} tiles were used out of {_tileSet.Count} tiles in the set.");
-            Console.WriteLine($"{_solver.ReduceStrategy.NumberOfPropagationCalls} nodes were visited.");
-            Console.WriteLine($"{_solver.ReduceStrategy.NumberOfReduceCalls} nodes were reduced.");
-            PrintSolution();
+            //tilesUsed = _solver.Nodes
+            //        .Where(node => node.IsCollapsed)
+            //        .Select(node => node.CollapsedValue)
+            //        .Distinct()
+            //        .Count();
+            //Console.Write($"Brute-Force Solver took {elapsed.Seconds} seconds to solve.");
+            //Console.WriteLine($"Grid size is {Width} x {Height} = {Width * Height} tiles.");
+            //Console.WriteLine($"Only {tilesUsed} tiles were used out of {_tileSet.Count} tiles in the set.");
+            //Console.WriteLine($"{_solver.ReduceStrategy.NumberOfPropagationCalls} nodes were visited.");
+            //Console.WriteLine($"{_solver.ReduceStrategy.NumberOfReduceCalls} nodes were reduced.");
+            //WFC_WangTilePrinter.PrintTiling(_solver, Width, Height);
         }
 
         private static SolverWithOracles<TileState, IList<TileState>> CreateSolver(Grid<int, int> grid, ReducerType reducerType)
         {
+            var maze = WFC_MazeTest.CreateMaze(Width, Height);
+            Console.WriteLine(maze.ToString());
             // Initialize nodes with possible choices.
             SolverWithOracles<TileState, IList<TileState>> solver = new SolverWithOracles<TileState, IList<TileState>>();
             var nodes = new List<IConstraintNode<TileState, IList<TileState>>>();
@@ -113,9 +117,11 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             foreach (int nodeIndex in grid.Nodes)
             {
                 var node = _nodeFactory.Create(nodeIndex);
+                var wangNode = node as WangTileConstraintNode<EdgeState, TileState>;
                 // Perform initial reduction
-                RestrictTopEdge(node as WangTileConstraintNode<EdgeState, TileState>);
-                RestrictBottomEdge(node as WangTileConstraintNode<EdgeState, TileState>);
+                //RestrictTopEdge(wangNode);
+                //RestrictBottomEdge(wangNode);
+                WFC_MazeTest.RestrictToMaze(maze, wangNode);
                 nodes.Add(node);
             }
             //solver.OnNodeCollapsed += Solver_OnNodeCollapsed;
@@ -281,113 +287,6 @@ namespace CrawfisSoftware.WaveFunctionCollapse
         private static IConstraintNodeFactory<TileState, IList<TileState>> CreateNodeFactory(SolverWithOracles<TileState, IList<TileState>> solver, IList<TileState> initialChoices)
         {
             return new WangTileConstraintNodeFactory<EdgeState, TileState>(solver, initialChoices, new EdgeStateComparer(), Width, Height);
-        }
-
-        private static void PrintSolution()
-        {
-            const string horizontalBar = "-------";
-            const string spaceBar = "       ";
-            const string spacePadding = "  ";
-            StringBuilder sb = new StringBuilder();
-            //for (int row = Height - 1; row >= 0; row--)
-            for (int row = 0; row < Height; row++)
-            {
-                sb.Clear();
-                sb.Append(value: "|");
-                for (int column = 0; column < Width; column++)
-                {
-                    sb.Append(horizontalBar); sb.Append(value: "|");
-                }
-                Console.WriteLine(sb.ToString());
-                //sb.Clear();
-                //sb.Append(value: "|");
-                //for (int column = 0; column < Width; column++)
-                //{
-                //    sb.Append(spaceBar); sb.Append(value: "|");
-                //}
-                //Console.WriteLine(sb.ToString());
-                sb.Clear();
-                sb.Append(value: "|");
-                for (int column = 0; column < Width; column++)
-                {
-                    var wangTile = _solver.GetNode(row * Width + column) as WangTileConstraintNode<EdgeState, TileState>;
-                    if (wangTile.IsCollapsed)
-                        sb.Append($"{spacePadding}{wangTile.CollapsedValue.edges[1].pathStyle.ToString()[0]},{wangTile.CollapsedValue.edges[1].edgeHeight.ToString()[0]}{spacePadding}");
-                    else
-                        sb.Append($"{spacePadding}X{spacePadding}");
-                    sb.Append(value: "|");
-                }
-                //sb.Append(value: "|");
-                Console.WriteLine(sb.ToString());
-                sb.Clear();
-                sb.Append(value: "|");
-                for (int column = 0; column < Width; column++)
-                {
-                    sb.Append(spaceBar); sb.Append(value: "|");
-                }
-                Console.WriteLine(sb.ToString());
-                //sb.Clear();
-                //sb.Append(value: "|");
-                //for (int column = 0; column < Width; column++)
-                //{
-                //    var wangTile = _solver.GetNode(row * Width + column) as WangTileConstraintNode;
-                //    sb.Append($"{spacePadding}{wangTile.CollapsedValue.edges[1].edgeHeight.ToString()[0]}{spacePadding}");
-                //    sb.Append(value: "|");
-                //}
-                ////sb.Append(value: "|");
-                //Console.WriteLine(sb.ToString());
-                sb.Clear();
-                sb.Append(value: "|");
-                for (int column = 0; column < Width; column++)
-                {
-                    var wangTile = _solver.GetNode(row * Width + column) as WangTileConstraintNode<EdgeState, TileState>;
-                    sb.Append($"{wangTile.CollapsedValue.edges[0].pathStyle.ToString()[0]}     {wangTile.CollapsedValue.edges[2].pathStyle.ToString()[0]}");
-                    sb.Append(value: "|");
-                }
-                //sb.Append(value: "|");
-                Console.WriteLine(sb.ToString());
-                sb.Clear();
-                sb.Append(value: "|");
-                for (int column = 0; column < Width; column++)
-                {
-                    var wangTile = _solver.GetNode(row * Width + column) as WangTileConstraintNode<EdgeState, TileState>;
-                    sb.Append($"{wangTile.CollapsedValue.edges[0].edgeHeight.ToString()[0]}     {wangTile.CollapsedValue.edges[2].edgeHeight.ToString()[0]}");
-                    sb.Append(value: "|");
-                }
-                //sb.Append(value: "|");
-                Console.WriteLine(sb.ToString());
-                sb.Clear();
-                sb.Append(value: "|");
-                for (int column = 0; column < Width; column++)
-                {
-                    sb.Append(spaceBar); sb.Append(value: "|");
-                }
-                Console.WriteLine(sb.ToString());
-                sb.Clear();
-                sb.Append(value: "|");
-                for (int column = 0; column < Width; column++)
-                {
-                    var wangTile = _solver.GetNode(row * Width + column) as WangTileConstraintNode<EdgeState, TileState>;
-                    sb.Append($"{spacePadding}{wangTile.CollapsedValue.edges[3].pathStyle.ToString()[0]},{wangTile.CollapsedValue.edges[3].edgeHeight.ToString()[0]}{spacePadding}");
-                    sb.Append(value: "|");
-                }
-                //sb.Append(value: "|");
-                Console.WriteLine(sb.ToString());
-                sb.Clear();
-                //sb.Append(value: "|");
-                //for (int column = 0; column < Width; column++)
-                //{
-                //    sb.Append(spaceBar); sb.Append(value: "|");
-                //}
-                //Console.WriteLine(sb.ToString());
-            }
-            sb.Clear();
-            sb.Append(value: "|");
-            for (int column = 0; column < Width; column++)
-            {
-                sb.Append(horizontalBar); sb.Append(value: "|");
-            }
-            Console.WriteLine(sb.ToString());
         }
     }
 }

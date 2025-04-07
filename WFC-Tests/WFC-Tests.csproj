@@ -25,6 +25,9 @@
     <Reference Include="CrawfisSoftware.IGraph">
       <HintPath>..\ExternalReferences\CrawfisSoftware.IGraph.dll</HintPath>
     </Reference>
+    <Reference Include="CrawfisSoftware.Maze">
+      <HintPath>..\ExternalReferences\CrawfisSoftware.Maze.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -109,13 +109,13 @@ namespace CrawfisSoftware.WaveFunctionCollapse
             if (row > 0)
             {
                 tile = _solver.GetNode(Id - Width) as WangTileConstraintNode<TEdge, TTile>;
-                if (!CheckEdge(topEdge, tile, Bottom)) return false;
+                if (!CheckEdge(bottomEdge, tile, Top)) return false;
             }
 
             if (row < Height - 1)
             {
                 tile = _solver.GetNode(Id + Width) as WangTileConstraintNode<TEdge, TTile>;
-                if (!CheckEdge(bottomEdge, tile, Top)) return false;
+                if (!CheckEdge(topEdge, tile, Bottom)) return false;
             }
             return true;
         }

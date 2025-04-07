@@ -1,0 +1,1380 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CrawfisSoftware.Maze</name>
+    </assembly>
+    <members>
+        <member name="T:CrawfisSoftware.Maze.DirectionsInstrumented">
+            <summary>
+            A 2D array with an event to notify you every time the array is possibly changed.
+            </summary>
+        </member>
+        <member name="E:CrawfisSoftware.Maze.DirectionsInstrumented.DirectionChanged">
+            <summary>
+            A renamed event to indicate that a direction in the array has changed.
+            </summary>
+            <remarks>Same as ValueChanged event.</remarks>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.DirectionsInstrumented.Directions">
+            <summary>
+            Get a 2D array of Directions.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.DirectionsInstrumented.#ctor(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.DirectionsInstrumented.#ctor(CrawfisSoftware.Collections.Graph.Direction[0:,0:])">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="directions">A 2D array of Direction's.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.DirectionsInstrumented.ReplaceDirections(CrawfisSoftware.Collections.Graph.Direction[0:,0:])">
+            <summary>
+            Replace the underlying data with a new 2D array of Direction's. Shallow copy.
+            </summary>
+            <param name="newDirections">An array of type T.</param>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.IMazeBuilder`2">
+            <summary>
+            Interface for creating mazes.
+            </summary>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.IMazeBuilder`2.Width">
+            <summary>
+            Get the width in the number of grid cells
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.IMazeBuilder`2.Height">
+            <summary>
+            Get the height in the number of grid cells
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.IMazeBuilder`2.StartCell">
+            <summary>
+            The starting cell index for the maze. Cell indices go from bottom-left across a row to top-right.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.IMazeBuilder`2.EndCell">
+            <summary>
+            The end cell index for the maze. Cell indices go from bottom-left across a row to top-right.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.IMazeBuilder`2.RandomGenerator">
+            <summary>
+            Get or set the random number generator that concrete maze builders may use.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.IMazeBuilder`2.Grid">
+            <summary>
+            Get the underlying grid data structure
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.IMazeBuilder`2.GetMaze">
+            <summary>
+            Get the current maze
+            </summary>
+            <returns>A maze</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.IMazeBuilder`2.GetDirection(System.Int32,System.Int32)">
+            <summary>
+            Get the direction for the specified cell.
+            </summary>
+            <param name="column">The column index of the cell.</param>
+            <param name="row">The row index of the cell.</param>
+            <returns>The Direction flags.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.IMazeBuilder`2.SetCell(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction,System.Boolean)">
+            <summary>
+            Set the directions for this cell w/o any safeguards
+            </summary>
+            <param name="i">The column index</param>
+            <param name="j">The row index</param>
+            <param name="dirs">The cell value including all directions</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.IMazeBuilder`2.CarvePassage(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Carve a passage in the specified direction.
+            </summary>
+            <param name="currentColumn">A column index</param>
+            <param name="currentRow">A row index</param>
+            <param name="selectedColumn">Neighboring column index</param>
+            <param name="selectedRow">Neighboring row index</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+            <return>Returns true if the operation was successful.</return>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.IMazeBuilder`2.AddWall(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Block the directions going to and from the cells
+            </summary>
+            <param name="currentColumn">A column index</param>
+            <param name="currentRow">A row index</param>
+            <param name="selectedColumn">Neighboring column index</param>
+            <param name="selectedRow">Neighboring row index</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+            <returns>True if the wall was able to be added.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.IMazeBuilder`2.Clear">
+            <summary>
+            Set all directions in the maze to Direction.Undefined
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.IMazeBuilder`2.RemoveUndefines">
+            <summary>
+            Remove Direction.Undefined for all cells.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.IMazeBuilder`2.RemoveUndefine(System.Int32,System.Int32)">
+            <summary>
+            Remove the Undefined flag from the specified cell.
+            </summary>
+            <param name="row">A row index</param>
+            <param name="column">A column index</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.IMazeBuilder`2.MakeBidirectionallyConsistent(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Loops over the specified region and removes the Direction.Undefined if any.
+            </summary>
+            <param name="currentColumn">Lower-left column</param>
+            <param name="currentRow">Lower-left row</param>
+            <param name="endColumn">upper-left column inclusive</param>
+            <param name="endRow">upper-right row inclusive</param>
+            <param name="carvingMissingPassages">If true, fix inconsistencies by opening up both sides. If false, wall up  both sides.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.IMazeBuilder`2.FreezeCellIfUndefined(System.Int32,System.Int32)">
+            <summary>
+            Remove the Undefined (freeze) the specified cell if it has a Direction set.
+            </summary>
+            <param name="row">A row index</param>
+            <param name="column">A column index</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.IMazeBuilder`2.RemoveDirections(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction,System.Boolean)">
+            <summary>
+            Remove any Directions in the specified cell.
+            </summary>
+            <param name="i">The column index</param>
+            <param name="j">The row index</param>
+            <param name="dirs">A Direction (or set of Direction flags) to remove.</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.IMazeBuilder`2.RemoveDirectionsExplicitly(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Remove the direction(s) to this cell w/o any safeguards
+            </summary>
+            <param name="i">The column index</param>
+            <param name="j">The row index</param>
+            <param name="dirs">A Direction (or set of Direction flags) to remove.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.IMazeBuilder`2.AddDirections(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction,System.Boolean)">
+            <summary>
+            Add the specified direction to the cell.
+            </summary>
+            <param name="i">The column index</param>
+            <param name="j">The row index</param>
+            <param name="dirs">A Direction (or set of Direction flags) to add.</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.IMazeBuilder`2.AddDirectionExplicitly(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Add the direction(s) to this cell w/o any safeguards
+            </summary>
+            <param name="i">The column index</param>
+            <param name="j">The row index</param>
+            <param name="dirs">A Direction (or set of Direction flags) to add.</param>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.Maze`2">
+            <summary>
+            A grid with some edges blocked and others open
+            </summary>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.Maze`2.Grid">
+            <summary>
+            Get the grid that is the basis for the maze
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.Maze`2.Width">
+            <value>
+            Get the width in the number of grid cells
+            </value>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.Maze`2.Height">
+            <value>
+            Get the height in the number of grid cells
+            </value>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.Maze`2.StartCell">
+            <summary>
+            The starting cell index for the maze. Cell indices go from bottom-left across a row to top-right.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.Maze`2.EndCell">
+            <summary>
+            The end cell index for the maze. Cell indices go from bottom-left across a row to top-right.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.Maze`2.#ctor(CrawfisSoftware.Collections.Graph.Grid{`0,`1},CrawfisSoftware.Collections.Graph.Direction[0:,0:],System.Int32,System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="grid">A grid to use as the basic structure of the maze</param>
+            <param name="directions">A 2D array of Direction flags that specify the maze.</param>
+            <param name="startCellIndex">The starting cell index for the maze. Cell indices go from 
+            bottom-left across a row to top-right.</param>
+            <param name="endCellIndex">The ending cell index for the maze. Cell indices go from 
+            bottom-left across a row to top-right.</param>
+            <remarks>Made access internal to prevent changes to the directions array.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.Maze`2.GetDirection(System.Int32,System.Int32)">
+            <summary>
+            Get the set of opening directions in the current cell
+            </summary>
+            <param name="column">The i index of the cell</param>
+            <param name="row">The j index of the cell</param>
+            <returns>A set of Direction flags</returns>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.Maze`2.NumberOfEdges">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.Maze`2.NumberOfNodes">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.Maze`2.Nodes">
+            <inheritdoc/>
+            <remarks>If the node for a maze has no directions specified it is not output.</remarks>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.Maze`2.Edges">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.Maze`2.GetNodeLabel(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.Maze`2.Neighbors(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.Maze`2.OutEdges(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.Maze`2.Parents(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.Maze`2.InEdges(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.Maze`2.ContainsEdge(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.Maze`2.GetEdgeLabel(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.Maze`2.TryGetEdgeLabel(System.Int32,System.Int32,`1@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.Maze`2.Transpose">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.Maze`2.ToString">
+            <summary>
+            Converts the maze to an asci string representation
+            </summary>
+            <returns>A string</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeBuilder`2">
+            <summary>
+            Implementation of IMazeBuilder to generate grid graphs or mazes.
+            </summary>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazeBuilder`2.StartCell">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazeBuilder`2.EndCell">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazeBuilder`2.RandomGenerator">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazeBuilder`2.Width">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazeBuilder`2.Height">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazeBuilder`2.Grid">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.GetMaze">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.GetDirection(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.SetCell(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.CarvePassage(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.AddWall(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.Clear">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.RemoveUndefines">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.RemoveUndefine(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.MakeBidirectionallyConsistent(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.FreezeCellIfUndefined(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.RemoveDirections(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.RemoveDirectionsExplicitly(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.AddDirections(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.AddDirectionExplicitly(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.#ctor(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.GetGridLabel{`0},CrawfisSoftware.Collections.Graph.GetEdgeLabel{`1})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="width">The width of the desired maze</param>
+            <param name="height">The height of the desired maze</param>
+            <param name="nodeAccessor">A function to retrieve any node labels</param>
+            <param name="edgeAccessor">A function to retrieve any edge weights</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilder`2.#ctor(CrawfisSoftware.Maze.MazeBuilder{`0,`1})">
+            <summary>
+            Copy Constructor (shallow copy)
+            </summary>
+            <param name="mazeBuilder">An existing maze builder to copy the current state from.</param>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazeBuilder`2.Directions">
+            <summary>
+            Get the underlying Directions as a 2D array
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazeBuilder`2.TraversalOrder">
+            <summary>
+            Get the order of cells that were changed during the maze creation process (if enabled).
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazeBuilder`2.KeepTrackOfChanges">
+            <summary>
+            Get or set whether to keep track of the order of cells that were changed during the maze creation process.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeBuilder`2.grid">
+            <summary>
+            The underlying grid data structure
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeBuilder`2.nodeFunction">
+            <summary>
+            A function used to look up node labels
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeBuilder`2.edgeFunction">
+            <summary>
+            A function used to look up edge weights
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeBuilder`2.directions">
+            <summary>
+            A 2D array storing the structure of the maze as a 2D array of directions
+            </summary>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeBuilderBitEdges">
+            <summary>
+            Create a maze given a compressed set of bit patterns for the vertical and horizontal edges on a grid
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderBitEdges.CarveMazeFromBitPattern``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Create a maze from the vertical and horizontal edge bits (legacy).
+            </summary>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+            <param name="mazeBuilder">A maze builder</param>
+            <param name="verticalBits">A bit pattern representing the vertical passages in a small maze.</param>
+            <param name="horizontalBits">A bit pattern representing the horizontal passages in a small maze.</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined. Default is false.</param>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeBuilderBraids">
+            <summary>
+            Given an existing maze builder, extensions to carve more passages that may cause loops or braid a perfect maze.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderBraids.MergeDeadEndsRandomly``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Boolean,System.Boolean)">
+            <summary>
+            Provides a braid for the maze, randomly connecting dead-end cell to a neighbor. 
+            </summary>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+            <param name="mazeBuilder">the underlying MazeBuilder</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.</param>
+            <param name="carveNeighbors">True to keep the underlying maze consistent. False to just modify the dead-end cell.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderBraids.MergeRandomDeadEnds``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Provides a braid for the maze, randomly connecting dead-end cell to a neighbor. 
+            </summary>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+            <param name="mazeBuilder">the underlying MazeBuilder</param>
+            <param name="numberToMerge">The number of dead ends to try to merge.</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.</param>
+            <param name="carveNeighbors">True to keep the underlying maze consistent. False to just modify the dead-end cell.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderBraids.MergeAdjacentCells``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},CrawfisSoftware.Maze.MazeMetricsComputations{``0,``1},System.Func{CrawfisSoftware.Collections.Graph.IIndexedEdge{``1},CrawfisSoftware.Maze.MazeCellMetrics,CrawfisSoftware.Maze.MazeCellMetrics,System.Single},System.Single,System.Boolean,System.Func{System.Int32,System.Single,CrawfisSoftware.Collections.Graph.IIndexedEdge{``1},System.Boolean},System.Boolean)">
+            <summary>
+            General routine to merge adjacent cells using scores and functions.
+            </summary>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+            <param name="mazeBuilder">the underlying MazeBuilder</param>
+            <param name="mazeMetricsComputations">Pre-computed maze metrics.</param>
+            <param name="computeWallScore">A function that computes a "score" for a wall using cell metrics and edge properties.</param>
+            <param name="thresholdToRemove">If the wall score is greater than this threshold it is added to a candidate set to carve.</param>
+            <param name="sortResults">If true, sort the candidate set according to the score.</param>
+            <param name="keepCarvingPredicate">A predicate to stop the carving based on the number of walls carved, the current score and the edge.</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeBuilderExpander">
+            <summary>
+            Extension methods to expand a given Maze Builder.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExpander.ExpandMaze``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Expand an existing MazeBuilder to a new one having wider openings, walls, and/or borders
+            </summary>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+            <param name="mazeBuilder"></param>
+            <param name="numberOfOpeningTiles">The number of cells to expand each opening to.</param>
+            <param name="numberOfWallTiles">The number of cells to expand each wall to.</param>
+            <param name="numberOfBorderTiles">The number of cells for the border.</param>
+            <returns>A new IMazeBuilder.</returns>
+            <remarks>Note: The Start and End cells will be set to the interior of the maze corresponding to the mapped cell location previously. 
+            Use one of the path carving algorithms to create an exit out of the boundary.</remarks>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeBuilderExtensions">
+            <summary>
+            Extension methods for the IMazeBuilder interface.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.CarveHorizontalSpan``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Carve a continuous horizontal passage.
+            </summary>
+            <param name="mazeBuilder">The IMazeBuilder to use for carving.</param>
+            <param name="row">The row to carve</param>
+            <param name="column1">The start (or end) of the passage.</param>
+            <param name="column2">The end (or start) of the passage.</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.CarveDirectionally``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction,System.Boolean)">
+            <summary>
+            Carve a passage in the specified direction.
+            </summary>
+            <param name="mazeBuilder">The IMazeBuilder to use for carving.</param>
+            <param name="currentColumn">Column index of the cell to carve</param>
+            <param name="currentRow">Row index of the row to carve</param>
+            <param name="directionToCarve">A single direction to carve</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+            <return>Returns true if the operation was successful.</return>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.CarvePassage``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Add an edge from <paramref name="currentCell"/> to <paramref name="targetCell"/> and vice versa.
+            </summary>
+            <param name="mazeBuilder">The IMazeBuilder to use for carving.</param>
+            <param name="currentCell">A cell index</param>
+            <param name="targetCell">A cell index</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+            <returns>Returns true if the operation was successful.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.BlockDirectionally``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction,System.Boolean)">
+            <summary>
+            Add a wall (block) in the specified direction.
+            </summary>
+            <param name="mazeBuilder">The IMazeBuilder to use.</param>
+            <param name="currentColumn">Column index of the cell.</param>
+            <param name="currentRow">Row index of the row.</param>
+            <param name="directionToBlock">A single direction to block</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+            <return>Returns true if the operation was successful.</return>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.AddWall``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Remove any edge from <paramref name="currentCell"/> to <paramref name="targetCell"/> and vice versa.
+            </summary>
+            <param name="mazeBuilder">The IMazeBuilder to use for carving.</param>
+            <param name="currentCell">A cell index</param>
+            <param name="targetCell">A cell index</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+            <returns>Returns true if the operation was successful.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.CarveVerticalSpan``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Carve a continuous vertical passage.
+            </summary>
+            <param name="mazeBuilder">The IMazeBuilder to use for carving.</param>
+            <param name="column">The column to carve</param>
+            <param name="row1">The start (or end) of the passage.</param>
+            <param name="row2">The end (or start) of the passage.</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.InvertDirections``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1})">
+            <summary>
+            Invert all of the directions, keeping Undefines unchanged.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.BlockRegion``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Delete all edges in the specified rectangle.
+            </summary>
+            <param name="mazeBuilder">The IMazeBuilder to use for carving.</param>
+            <param name="lowerLeftCell">The cell index of the lower-left corner of a rectangular region</param>
+            <param name="upperRightCell">The cell index of the upper-right corner of a rectangular region</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.OpenRegion``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Add all edges to neighbors within the specified rectangle.
+            </summary>
+            <param name="mazeBuilder">The IMazeBuilder to use for carving.</param>
+            <param name="lowerLeftCell">The cell index of the lower-left corner of a rectangular region</param>
+            <param name="upperRightCell">The cell index of the upper-right corner of a rectangular region</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+            <param name="markAsUndefined">If true (default), cells are also marked as Undefined (aka unfrozen).</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.FillRegion``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction,System.Boolean)">
+            <summary>
+            Set all cells with the directions specified.
+            </summary>
+            <param name="mazeBuilder">The IMazeBuilder to use for carving.</param>
+            <param name="lowerLeftCell">The lower-left corner of the region to fix.</param>
+            <param name="upperRightCell">The upper-right corner of the region to fix.</param>
+            <param name="dirs">List of directions to set each cell to.</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+            <remarks>May lead to possible inconsistent neighbor directions.</remarks>
+            <seealso>MakeBidirectionallyConsistent</seealso>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.SetDirections``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},CrawfisSoftware.Collections.Graph.Direction[0:,0:])">
+            <summary>
+            
+            </summary>
+            <typeparam name="N"></typeparam>
+            <typeparam name="E"></typeparam>
+            <param name="mazeBuilder">The IMazeBuilder to use for carving.</param>
+            <param name="directions">A 2D array of Direction's to initialize the mazeBuilder from.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.WallBoundary``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Boolean)">
+            <summary>
+            Add walls (inconsistently currently) to the boundary of the define rectangle.
+            </summary>
+            <param name="mazeBuilder">The IMazeBuilder to use for carving.</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.RemoveDeadEnds``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Boolean)">
+            <summary>
+            Remove dead-ends (implementation specific - one pass or many passes).
+            Replaces dead-ends by blocking the only passage creating an empty cell
+            </summary>
+            <param name="mazeBuilder">The IMazeBuilder to use for carving.</param>
+            <param name="maxCount">Maximum number of Dead-ends to trim.</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.FreezeDefinedCells``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1})">
+            <summary>
+            Remove Direction.Undefined for all cells that have been defined
+            </summary>
+            <param name="mazeBuilder">The IMazeBuilder to use for carving.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.MakeBidirectionallyConsistent``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Boolean)">
+            <summary>
+            Ensures that all edges are bi-directional. In other words, a passage was not carved from A to
+            B and not B to A.
+            </summary>
+            <param name="mazeBuilder">The IMazeBuilder to use for carving.</param>
+            <param name="carvingMissingPassages">If true, fix inconsistencies by opening up both sides. If false, wall up  both sides.</param>
+            <remarks>This will open up all inconsistencies.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderExtensions.MakeBidirectionallyConsistent``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Ensures that all edges are bi-directional. In other words, a passage was not carved from A to
+            B and not B to A.
+            </summary>
+            <param name="mazeBuilder">The IMazeBuilder to use for carving.</param>
+            <param name="lowerLeftCell">The lower-left corner of the region to fix.</param>
+            <param name="upperRightCell">The upper-right corner of the region to fix.</param>
+            <param name="carvingMissingPassages">If true, fix inconsistencies by opening up both sides. If false, wall up  both sides.</param>
+            <remarks>This will open up all inconsistencies.</remarks>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeBuilderModifiers">
+            <summary>
+            Modify a Maze Builder based on maze metrics.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderModifiers.TrimDeadEnds``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},CrawfisSoftware.Maze.MazeMetricsComputations{``0,``1},System.Int32)">
+            <summary>
+            Trim all dead-ends to a specified maximum length.
+            </summary>
+            <param name="mazeBuilder">The maze builder to modify.</param>
+            <param name="metricsComputations">The metrics computations for the maze.</param>
+            <param name="maxDeadEndLength">Length in number of cells.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderModifiers.TrimDeadEnds``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},CrawfisSoftware.Maze.MazeMetricsComputations{``0,``1},System.Int32,System.Int32)">
+            <summary>
+            Trim a specific dead-end to the specified maximum length.
+            </summary>
+            <param name="mazeBuilder">The maze builder to modify.</param>
+            <param name="metricsComputations">The metrics computations for the maze.</param>
+            <param name="branchId">The solution path cell id.</param>
+            <param name="maxDeadEndLength">Length in number of cells.</param>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeBuilderRecursiveDivision`2">
+            <summary>
+            Create a maze using the Recursive Division algorithm
+            </summary>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazeBuilderRecursiveDivision`2.SplitHorizontalOrVertical">
+            <summary>
+            A function to determine whether to split horizontally or vertically.
+            It takes in the width and height of the region and returns true if it
+            should split horizontally, false if it should split vertically. 
+            Default implementation splits the axes with the longer side length.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazeBuilderRecursiveDivision`2.HorizontalSplitDecision">
+            <summary>
+            Function to take the current column and width and return the column to split.
+            Should return -1 if the splitting should stop (width &lt; 2). Default implementation
+            splits a randomly from column to column+width-1.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazeBuilderRecursiveDivision`2.VerticalSplitDecision">
+            <summary>
+            Function to take the current row and height and return the row to split.
+            Should return -1 if the splitting should stop (height &lt; 2). Default implementation
+            splits a randomly from row to row+height-1.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderRecursiveDivision`2.#ctor(CrawfisSoftware.Maze.IMazeBuilder{`0,`1})">
+            <summary>
+            Constructor, Takes an existing maze builder (derived from MazeBuilderAbstract) and copies the state over.
+            </summary>
+            <param name="mazeBuilder">A maze builder</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderRecursiveDivision`2.CarveMaze(System.Boolean)">
+            <summary>
+            Create a maze using the Recursive Division algorithm.
+            </summary>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined. Default is false.</param>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeBuilderShortestPaths`2">
+            <summary>
+            Craft a "maze" by carving specific paths.
+            </summary>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderShortestPaths`2.EdgeComparerUsingGetEdgeLabel(CrawfisSoftware.Collections.Graph.IIndexedEdge{System.Single},CrawfisSoftware.Collections.Graph.Direction,CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Static function that can be assigned to the EdgeFunction. This one just returns the edge's value when the Edge Type is a float.
+            </summary>
+            <param name="edge">The indexed edge.</param>
+            <param name="fromCell">The (current) set of directions the "from" cell has.</param>
+            <param name="toCell">The (current) set of directions the "to" cell has.</param>
+            <returns>A float value to use as the edge value.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderShortestPaths`2.EdgeComparerUsingGetEdgeLabel(CrawfisSoftware.Collections.Graph.IIndexedEdge{System.Int32},CrawfisSoftware.Collections.Graph.Direction,CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Static function that can be assigned to the EdgeFunction. This one just returns the edge's value when the Edge Type is a int (as a float).
+            </summary>
+            <param name="edge">The indexed edge.</param>
+            <param name="fromCell">The (current) set of directions the "from" cell has.</param>
+            <param name="toCell">The (current) set of directions the "to" cell has.</param>
+            <returns>A float value to use as the edge value.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderShortestPaths`2.ConstantOfOne(CrawfisSoftware.Collections.Graph.IIndexedEdge{`1},CrawfisSoftware.Collections.Graph.Direction,CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Static function that can be assigned to the EdgeFunction. This one just returns the value of one as a float.
+            </summary>
+            <param name="edge">The indexed edge.</param>
+            <param name="fromCell">The (current) set of directions the "from" cell has.</param>
+            <param name="toCell">The (current) set of directions the "to" cell has.</param>
+            <returns>The floating value 1.0f.</returns>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazeBuilderShortestPaths`2.EdgeFunction">
+            <summary>
+            A function that takes the edge and the two cells current set of maze directions and returns a float.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderShortestPaths`2.#ctor(CrawfisSoftware.Maze.IMazeBuilder{`0,`1})">
+            <summary>
+            Constructor initialized with a prior MazeBuilder.
+            </summary>
+            <param name="mazeBuilder">A maze builder.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderShortestPaths`2.CarvePath(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Carves a path from the starting cell to the ending cell.
+            </summary>
+            <param name="startingCell">The index of the starting cell.</param>
+            <param name="endingCell">The index of the ending cell.</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderShortestPaths`2.CarveAllShortestPathsToTarget(System.Int32,System.Boolean,System.Single)">
+            <summary>
+            Carves path to every node in the underlying grid from the target cell that are reachable for a fixed cost.
+            </summary>
+            <param name="targetCell">A grid cell index.</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+            <param name="maxCost">The maximum cost that a node is reachable.</param>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeBuilderUtility`2">
+            <summary>
+            Static class for some useful tools to build mazes
+            </summary>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderUtility`2.CreateMazeFromCSVFile(System.String,CrawfisSoftware.Collections.Graph.GetGridLabel{`0},CrawfisSoftware.Collections.Graph.GetEdgeLabel{`1})">
+            <summary>
+            Create a maze from a CSV file
+            </summary>
+            <param name="filename">Path and filename of the csv file to open.</param>
+            <param name="nodeAccessor">A function to retrieve any node labels</param>
+            <param name="edgeAccessor">A function to retrieve any edge weights</param>
+            <returns></returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderUtility`2.MoveOriginToLowerLeft(System.Int32,System.Int32,System.Collections.Generic.IList{CrawfisSoftware.Collections.Graph.Direction})">
+            <summary>
+            Utility on Direction that will take a stream of directions with the y origin as the top
+            and produce a 2D grid of Directions with the y origin as the bottom row.
+            </summary>
+            <param name="width">The desired width of the maze</param>
+            <param name="height">The desired height of the maze</param>
+            <param name="directions">A stream of directions starting from the lower-left corner.</param>
+            <returns>A 2D grid of Directions</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderUtility`2.CreateMaze(System.Int32,System.Int32,System.Collections.Generic.IList{CrawfisSoftware.Collections.Graph.Direction})">
+            <summary>
+            Create a maze given a stream of directions
+            </summary>
+            <param name="width">The desired width of the maze</param>
+            <param name="height">The desired height of the maze</param>
+            <param name="directions">A stream of directions starting from the lower-left corner.</param>
+            <returns>A new maze</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderUtility`2.CreateMaze(System.Int32,System.Int32,System.Collections.Generic.IList{CrawfisSoftware.Collections.Graph.Direction},CrawfisSoftware.Collections.Graph.GetGridLabel{`0},CrawfisSoftware.Collections.Graph.GetEdgeLabel{`1})">
+            <summary>
+            Create a maze given a stream of directions
+            </summary>
+            <param name="width">The desired width of the maze</param>
+            <param name="height">The desired height of the maze</param>
+            <param name="directions">A stream of directions starting from the lower-left corner.</param>
+            <param name="nodeAccessor">A function to retrieve any node labels</param>
+            <param name="edgeAccessor">A function to retrieve any edge weights</param>
+            <returns>A new maze</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderUtility`2.CreateMaze(CrawfisSoftware.Collections.Graph.Direction[0:,0:],CrawfisSoftware.Collections.Graph.GetGridLabel{`0},CrawfisSoftware.Collections.Graph.GetEdgeLabel{`1})">
+            <summary>
+            Create a maze from a grid of Directions
+            </summary>
+            <param name="directions">A 2D array of Directions for the maze</param>
+            <param name="nodeAccessor">A function to retrieve any node labels</param>
+            <param name="edgeAccessor">A function to retrieve any edge weights</param>
+            <returns>A maze</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderUtility`2.DummyNodeValues(System.Int32,System.Int32)">
+            <summary>
+            Function that always returns 1
+            </summary>
+            <param name="i">Column index of a cell.</param>
+            <param name="j">Row index of a cell.</param>
+            <returns>The default value for the <typeparamref name="N"/>.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeBuilderUtility`2.DummyEdgeValues(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Function that always returns the default value
+            </summary>
+            <param name="i">Column index of a cell.</param>
+            <param name="j">Row index of a cell.</param>
+            <param name="dir">Direction of the desired edge</param>
+            <returns>The default value for the <typeparamref name="E"/>.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.EdgeFlow">
+            <summary>
+            Encoding for maze's that can prescribe the "direction" from the start (Entrance to an exit). Alternative exits from main paths.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.EdgeFlow.None">
+            <summary>
+            The node is unreachable.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.EdgeFlow.Entrance">
+            <summary>
+            THe entrance to the cell.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.EdgeFlow.PrimaryExit">
+            <summary>
+            An exit from the cell. Typically along the solution path or main dead-end branch.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.EdgeFlow.SecondaryExit">
+            <summary>
+            There is more than 1 exit and this one is labeled as secondary.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.EdgeFlow.ThirdExit">
+            <summary>
+            Typically, the cell is a cross section with one exit labeled as Primary another as Secondary and this one as a 3rd possible exit.
+            </summary>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeCellMetrics">
+            <summary>
+            Metrics on a per cell basis for a maze.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeCellMetrics.DistanceFromStart">
+            <summary>
+            The distance travelled from the start to reach this cell.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeCellMetrics.DistanceToEnd">
+            <summary>
+            Distance needed to reach the exit.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeCellMetrics.LeftEdgeFlow">
+            <summary>
+            A label for the left edge of the cell.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeCellMetrics.TopEdgeFlow">
+            <summary>
+            A label for the top edge of the cell.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeCellMetrics.RightEdgeFlow">
+            <summary>
+            A label for the right edge of the cell.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeCellMetrics.BottomEdgeFlow">
+            <summary>
+            A label for the bottom edge of the cell.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeCellMetrics.BranchLevel">
+            <summary>
+            An indicator of how deep in the maze (from a complexity point of view) or the number of decisions. It depends on the algorithm used to calculate the branch levels.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeCellMetrics.PathDistanceToSolution">
+            <summary>
+            The distance needed to get back to the solution path.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeCellMetrics.GridDistanceToSolution">
+            <summary>
+            How close to the solution path this cell is ignoring the maze tunnels (as a bird flies)
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeCellMetrics.BranchId">
+            <summary>
+            A unique id for the entire dead-end branch. It contains the solution cell that the branch is attached to and the edge it is attached to.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeCellMetrics.Parent">
+            <summary>
+            The node that was used to reach this node.
+            </summary>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeMetrics">
+            <summary>
+            Metrics on the overall Maze.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeMetrics.SolutionPathMetric">
+            <summary>
+            The solution path and metrics on it.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeMetrics.NumberOfDeadEndCells">
+            <summary>
+            Count of the number of dead-end cells.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeMetrics.NumberOfStraightCells">
+            <summary>
+            Count of the number of straight cells.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeMetrics.NumberOfTurnCells">
+            <summary>
+            Count of the number of cells with turns.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeMetrics.NumberOfTJunctionCells">
+            <summary>
+            Count of the number of cells with T-junctions.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeMetrics.NumberOfCrossJunctionCells">
+            <summary>
+            Count of the number of cells with cross-sections or open.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeMetrics.NumberOfSolidCells">
+            <summary>
+            Count of cells that are not reachable.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeMetrics.NumberOfUndefinedCells">
+            <summary>
+            Count of the number cells with the Undefined flag.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeMetrics.MaxBranchLevel">
+            <summary>
+            The maximum number of times a secondary or third exit will be crossed when traversing the maze.
+            </summary>
+            <remarks>This is dependent on how the Branch level is defined per cell and the algorithmic choice for what a branch means. Currently implementation has a main branch for each dead-end (recursively).</remarks>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeMetrics.MaxDeadEndLength">
+            <summary>
+            The maximum distance any dead-end cell is from the solution path.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeMetrics.MaxDistanceFromStart">
+            <summary>
+            The furthest distance reachable from the start node.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.MazeMetrics.MaxDistanceToEnd">
+            <summary>
+            The furthest distance any cell is from the exit.
+            </summary>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeMetricsComputations`2">
+            <summary>
+            Computes metrics on a maze and allows for easy access to both global metrics and per cell metrics.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazeMetricsComputations`2.OverallMetrics">
+            <summary>
+            Get the metrics pertaining to the entire maze.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.#ctor(CrawfisSoftware.Maze.Maze{`0,`1})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="maze">The maze to compute analytics on.</param>
+            <remarks>Call the various Computation methods prior to accessing data. This allows the use to pick and choose which computations should be 
+            performed <seealso cref="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.ComputeAllMetrics(System.Random,CrawfisSoftware.Collections.Graph.Direction)"/>.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.ComputeAllMetrics(System.Random,CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Compute all available per cell Metrics.
+            </summary>
+            <param name="random"></param>
+            <param name="exitDirection">Unless the exit is a dead-end, this should be specified to indicate how the solution path exits the grid.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.GetCellMetrics(System.Int32,System.Int32)">
+            <summary>
+            Get metrics pertaining to a single cell.
+            </summary>
+            <param name="column">The grid column of the cell.</param>
+            <param name="row">The grid row of the cell.</param>
+            <returns>A MazeCellMetrics.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.GetCellMetrics(System.Int32)">
+            <summary>
+            Get metrics pertaining to a single cell.
+            </summary>
+            <param name="cellIndex">The grid cell index.</param>
+            <returns>A MazeCellMetrics.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.ComputeMazeDistanceFromSolutionPath(System.Int32)">
+            <summary>
+            Compute the maze-distance (path distance) from the solution path.
+            </summary>
+            <param name="unreachableDistance">If the cell is not reachable from the solution path, set the distance to this value.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.ComputeGridDistanceFromSolutionPath">
+            <summary>
+            Compute the non-maze, grid-based distance each cell is from the solution path.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.ComputeBranchLevels(System.Boolean)">
+            <summary>
+            Compute branch levels for the maze, where the level is based on the number of second and third exit crossings.
+            </summary>
+            <param name="setBranchRootToSolution">If True (default), then the BranchID's are based on the solution path. 
+            If false, the BranchID's are the closest ancestor with a junction (a branch).</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.ComputeDistancesFromStart">
+            <summary>
+            Compute the distance (in number of cells) from the start.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.ComputeDistancesToEnd">
+            <summary>
+            Compute the distance (in number of cells) to reach the end.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.DirectionsFromStart">
+            <summary>
+            Computes for each edge of a cell whether it is reached from the start (Entrance) or not (and Exit - In this case always a PrimaryExit).
+            </summary>
+            <seealso cref="!:AddSecondaryExistsOnPath"/>
+            <seealso cref="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.RandomlyAssignSecondaryExits(System.Random)"/>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.ComputeSolutionPath">
+            <summary>
+            Compute metrics on the solution path for the maze.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.AddSecondaryExitsOnPath(CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Convert multiple PrimaryExits on T-junctions and Cross-Junctions to Secondary Exits along the solution path to the maze.
+            </summary>
+            <param name="exitDirection">Unless the exit is a dead-end, this should be specified to indicate how the solution path exits the grid.</param>
+            <remarks>Calls DirectionsFromStart is not called already.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.AddSecondaryExitsOnPath(System.Int32,System.Int32,CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Convert multiple PrimaryExits on T-junctions and Cross-Junctions to Secondary Exits along the path from the specified startingCell to the endingCell.
+            </summary>
+            <param name="startingCell">The starting cell of the path to apply directions to.</param>
+            <param name="endingCell">The ending cell of the path to apply directions to.</param>
+            <param name="exitDirection">Unless the exit is a dead-end, this should be specified to indicate how the solution path exits the grid.</param>
+            <remarks>Calls DirectionsFromStart is not called already.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.AssignSecondaryExitsToAllJunctions(System.Boolean)">
+            <summary>
+            Finds all Cross-sections and T-Junctions and relabel all PrimaryExits to SecondaryExits.
+            </summary>
+            <param name="ignoreSolutionPath">If true, no edges on the solution path will be changed.</param>
+            <remarks>Requires solution path metrics to be computed if ignoreSolutionPath is true.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.RandomlyAssignSecondaryExits(System.Random)">
+            <summary>
+            Finds all Cross-sections and T-Junctions where the EdgeFlow directions contain multiple PrimaryExits and converts all but one to SecondaryExits.
+            </summary>
+            <param name="random">A Random number generator</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeMetricsComputations`2.RandomlyAssignTertiaryExits(System.Random)">
+            <summary>
+            Finds all Cross-sections where the EdgeFlow directions contain multiple SecondaryExits and converts one of them to a ThirdExit.
+            </summary>
+            <param name="random">A Random number generator</param>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.TileStyle">
+            <summary>
+            Predefined OccupancyGrid stamp styles (tile styles).
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.TileStyle.Small2x2">
+            <summary>
+            A 2x2 tile style for an OccupancyGrid.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.TileStyle.Tight3x3">
+            <summary>
+            A 3x3 tile style with a cross for a cross-section.
+            </summary>
+        </member>
+        <member name="F:CrawfisSoftware.Maze.TileStyle.Open3x3">
+            <summary>
+            A 3x3 tile style with edges more open for junctions.
+            </summary>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeOccupancyGrids">
+            <summary>
+            Static methods to convert a Maze to an OccupancyGrid.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeOccupancyGrids.ReplaceDirectionsWithStamps``2(CrawfisSoftware.Maze.Maze{``0,``1},CrawfisSoftware.Collections.Graph.StampSet{CrawfisSoftware.Collections.Graph.Direction},System.Boolean)">
+            <summary>
+            Given a maze and a stamp set associating directions to stamps, create and return an occupancy grid.
+            </summary>
+            <typeparam name="N">The type used for node labels in the maze.</typeparam>
+            <typeparam name="E">The type used for edge weights in the maze.</typeparam>
+            <param name="maze">The maze.</param>
+            <param name="stampSet">A stamp set with Direction as the associated type for id's.</param>
+            <param name="ignoreUndefinedDirection">If true, undefined directions will be ignored.</param>
+            <returns>An OccupancyGrid.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeOccupancyGrids.CreateOccupancyGridFromMaze``2(CrawfisSoftware.Maze.Maze{``0,``1},CrawfisSoftware.Collections.Graph.StampSet{CrawfisSoftware.Collections.Graph.Direction})">
+            <summary>
+            Given a maze and a stamp set associating directions to stamps, create and return an occupancy grid.
+            </summary>
+            <typeparam name="N">The type used for node labels in the maze.</typeparam>
+            <typeparam name="E">The type used for edge weights in the maze.</typeparam>
+            <param name="maze">The maze.</param>
+            <param name="stampSet">A stamp set with Direction as the associated type for id's.</param>
+            <returns>An OccupancyGrid.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeOccupancyGrids.CreateOccupancyGridFromMaze``2(CrawfisSoftware.Maze.Maze{``0,``1},CrawfisSoftware.Maze.TileStyle)">
+            <summary>
+            Given a maze create and return an occupancy grid.
+            </summary>
+            <typeparam name="N">The type used for node labels in the maze.</typeparam>
+            <typeparam name="E">The type used for edge weights in the maze.</typeparam>
+            <param name="maze">The maze.</param>
+            <param name="tileStyle">The style of the underlying stamp set to use. Default is to replace each cell with a 3x3 occupancy grid having all of the corners blocked.</param>
+            <returns>An OccupancyGrid.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeOccupancyGrids.CarveOpenings(CrawfisSoftware.Maze.IMazeBuilder{System.Int32,System.Int32},System.Boolean[0:,0:])">
+            <summary>
+            Carve openings based on the list of compressed vertical and horizontal edge flags for each row
+            </summary>
+            <param name="mazeBuilder">An existing maze builder to use in the carving process</param>
+            <param name="solidBlocks">2D array matching the maze builder's width and height.
+            A value of true implies this cell is a solid block. Passages will be carved from non-solid
+            blocks to adjacent non-solid blocks.</param>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeOccupancyGrids.ConvertOccupancyGridToMaze(CrawfisSoftware.Collections.Graph.OccupancyGrid)">
+            <summary>
+            Convert an OccupancyGrid to a Maze.
+            </summary>
+            <param name="cells">An <c>OccupancyGrid</c>.</param>
+            <returns>A <c>Maze</c>.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazePathCost`2">
+            <summary>
+            A path cost comparer for a Maze. The cost of traversing a passage is PassageTraversalCost.
+            </summary>
+            <typeparam name="N">The type of the node labels in the corresponding graph.</typeparam>
+            <typeparam name="E">The type of the edge labels in the corresponding graph.</typeparam>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazePathCost`2.PassageTraversalCost">
+            <summary>
+            The cost of traversing an existing passage.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazePathCost`2.FixedWallCarveCost">
+            <summary>
+            The cost of carving a previously defined wall.
+            </summary>
+        </member>
+        <member name="P:CrawfisSoftware.Maze.MazePathCost`2.UndefinedWallCarveCost">
+            <summary>
+            The cost of carving unexplored space.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazePathCost`2.#ctor(CrawfisSoftware.Maze.IMazeBuilder{`0,`1})">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="mazeBuilder">The underlying maze builder, <c>MazeBuilderAbstract</c>.</param>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeQuery">
+            <summary>
+            Helper static class for listing cells with a certain configuration.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeQuery.DeadEnds``2(CrawfisSoftware.Maze.Maze{``0,``1})">
+            <summary>
+            Lists the grid (row,column) tuple of each dead-end.
+            </summary>
+            <param name="maze">The maze to query.</param>
+            <returns>An IEnumerable of Tuples containing the row and column.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeQuery.TJunctions``2(CrawfisSoftware.Maze.Maze{``0,``1})">
+            <summary>
+            Lists the grid (row,column) tuple of each TJunction.
+            </summary>
+            <param name="maze">The maze to query.</param>
+            <returns>An IEnumerable of Tuples containing the row and column.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeQuery.Straights``2(CrawfisSoftware.Maze.Maze{``0,``1})">
+            <summary>
+            Lists the grid (row,column) tuple of each horizontal or vertical cell.
+            </summary>
+            <param name="maze">The maze to query.</param>
+            <returns>An IEnumerable of Tuples containing the row and column.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeQuery.StraightAways``2(CrawfisSoftware.Maze.Maze{``0,``1})">
+            <summary>
+            Lists the grid (row,column) tuple of each start of a sequence of horizontal or vertical cells (no junctions).
+            </summary>
+            <param name="maze">The maze to query.</param>
+            <returns>An IEnumerable of Tuples containing the starting cell index, the direction and the length of the straightaway.</returns>
+            <remarks>Uses Depth-First Search from the Maze's starting cell. This should be a turn/junction cell.</remarks>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeQuery.Turns``2(CrawfisSoftware.Maze.Maze{``0,``1})">
+            <summary>
+            Lists the grid (row,column) tuple of each cell containing only a turn.
+            </summary>
+            <param name="maze">The maze to query.</param>
+            <returns>An IEnumerable of Tuples containing the row and column.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeQuery.CrossSections``2(CrawfisSoftware.Maze.Maze{``0,``1})">
+            <summary>
+            Lists the grid (row,column) tuple of each cross-section.
+            </summary>
+            <param name="maze">The maze to query.</param>
+            <returns>An IEnumerable of Tuples containing the row and column.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeQuery.MatchingExactly``2(CrawfisSoftware.Maze.Maze{``0,``1},CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Lists the grid (row,column) tuple of each matching exactly the set of Directions.
+            </summary>
+            <param name="maze">The maze to query.</param>
+            <param name="directions">An set of directions as a Direction Flag (enum).</param>
+            <returns>An IEnumerable of Tuples containing the row and column.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeQuery.ContainsAll``2(CrawfisSoftware.Maze.Maze{``0,``1},CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Lists the grid (row,column) tuple of each cell that contain the set of directions.
+            </summary>
+            <param name="maze">The maze to query.</param>
+            <param name="directions">An set of directions as a Direction Flag (enum).</param>
+            <returns>An IEnumerable of Tuples containing the row and column.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeQuery.ContainsAny``2(CrawfisSoftware.Maze.Maze{``0,``1},CrawfisSoftware.Collections.Graph.Direction)">
+            <summary>
+            Lists the grid (row,column) tuple of each cell that contain any of directions.
+            </summary>
+            <param name="maze">The maze to query.</param>
+            <param name="directions">An set of directions as a Direction Flag (enum).</param>
+            <returns>An IEnumerable of Tuples containing the row and column.</returns>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeQuery.FindInconsistentEdges``2(CrawfisSoftware.Maze.Maze{``0,``1})">
+            <summary>
+            Query the maze to find all edges between cells where the directions do not match: Goes East but East neighbor does not go West.
+            </summary>
+            <param name="maze">The maze to query.</param>
+            <returns>An IEnumerable of Tuples containing the cell index of the cell that has an extra direction and the inconsistent neighbor cell index.</returns>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.MazeUtility">
+            <summary>
+            Static methods extending the Maze class.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.MazeUtility.Inverse``2(CrawfisSoftware.Maze.Maze{``0,``1},System.Boolean,CrawfisSoftware.Collections.Graph.GetGridLabel{``0},CrawfisSoftware.Collections.Graph.GetEdgeLabel{``1})">
+            <summary>
+            Given a maze, reverses its directions. Undefined is handled separately.
+            </summary>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+            <param name="maze">The maze to invert.</param>
+            <param name="removeUndefines">If false, Direction.Undefined is preserved.If true, Direction.Undefined is ignored and stripped.</param>
+            <param name="nodeAccessor">A function to retrieve any node labels</param>
+            <param name="edgeAccessor">A function to retrieve any edge weights</param>
+            <returns>A maze</returns>
+            <remarks>The NodeAccessor and EdgeAccessor's are not preserved by default.</remarks>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.PerfectMazes.PerfectMazes1">
+            <summary>
+            Extensions for IMazeBuilder for various perfect maze (spanning tree) algorithms.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.PerfectMazes.PerfectMazes1.AldousBroder``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Boolean)">
+            <summary>
+            Create a perfect maze using the Aldous Broder algorithm, which is a
+            random walk and may take a while.
+            </summary>
+            <param name="mazeBuilder">A maze builder</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.PerfectMazes.PerfectMaze2">
+            <summary>
+            Extensions for IMazeBuilder for various perfect maze (spanning tree) algorithms.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.PerfectMazes.PerfectMaze2.BinaryTree``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Boolean)">
+            <summary>
+            Create a maze using the Binary Tree algorithm
+            </summary>
+            <param name="mazeBuilder">A maze builder</param>
+            <param name="percentHorizontal">Control to favor horizontal or vertical runs</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined. Default is false.</param>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.PerfectMazes.PerfectMazes">
+            <summary>
+            Extensions for IMazeBuilder for various perfect maze (spanning tree) algorithms.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.PerfectMazes.PerfectMazes.RecursiveBacktracking``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Int32,System.Boolean)">
+            <summary>
+            Generate a Maze using depth-first search (Recursive Backtracking)
+            </summary>
+            <param name="mazeBuilder">A maze builder</param>
+            <param name="startingNode">An optional node to start from. Only reachable nodes will be carved.</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined. Default is false.</param>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+            <remarks>If some cells are preserved, then this algorithm will not cross that boundary.</remarks>
+        </member>
+        <member name="T:CrawfisSoftware.Maze.PerfectMazes.PerfectMaze3">
+            <summary>
+            Extensions for IMazeBuilder for various perfect maze (spanning tree) algorithms.
+            </summary>
+        </member>
+        <member name="M:CrawfisSoftware.Maze.PerfectMazes.PerfectMaze3.RecursiveDivision``2(CrawfisSoftware.Maze.IMazeBuilder{``0,``1},System.Boolean)">
+            <summary>
+            Create a perfect maze using the Aldous Broder algorithm, which is a
+            random walk and may take a while.
+            </summary>
+            <param name="mazeBuilder">A maze builder</param>
+            <param name="preserveExistingCells">Boolean indicating whether to only replace maze cells that are undefined.
+            Default is false.</param>
+            <typeparam name="N">The type used for node labels</typeparam>
+            <typeparam name="E">The type used for edge weights</typeparam>
+        </member>
+    </members>
+</doc>
