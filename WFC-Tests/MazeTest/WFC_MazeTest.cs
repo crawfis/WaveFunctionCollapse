@@ -18,7 +18,10 @@ namespace WFC_Tests.MazeTest
         public static Maze<int, int> CreateMaze(int width, int height)
         {
             var builder = new MazeBuilder<int, int>(width, height);
-            builder.RecursiveBacktracking();
+            // Freeze the top row.
+            for (int i = 0; i < width; i++)
+                builder.RemoveUndefine(height - 1, i);
+            builder.RecursiveBacktracking(0, true);
             builder.RemoveDeadEnds();
             builder.RemoveDeadEnds();
             builder.RemoveDeadEnds();

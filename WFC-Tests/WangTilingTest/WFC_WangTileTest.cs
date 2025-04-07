@@ -119,8 +119,8 @@ namespace CrawfisSoftware.WaveFunctionCollapse
                 var node = _nodeFactory.Create(nodeIndex);
                 var wangNode = node as WangTileConstraintNode<EdgeState, TileState>;
                 // Perform initial reduction
-                //RestrictTopEdge(wangNode);
-                //RestrictBottomEdge(wangNode);
+                RestrictTopEdge(wangNode);
+                RestrictBottomEdge(wangNode);
                 WFC_MazeTest.RestrictToMaze(maze, wangNode);
                 nodes.Add(node);
             }
@@ -178,7 +178,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
         private static bool RestrictTopEdge(WangTileConstraintNode<EdgeState, TileState> constrainedWangTile)
         {
             bool reduced = false;
-            if ((constrainedWangTile.Id / constrainedWangTile.Width) == 0)
+            if ((constrainedWangTile.Id / constrainedWangTile.Width) == constrainedWangTile.Height - 1)
             {
                 for (int i = constrainedWangTile.Possibilities.Count - 1; i >= 0; i--)
                 {
@@ -196,7 +196,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
         private static bool RestrictBottomEdge(WangTileConstraintNode<EdgeState, TileState> constrainedWangTile)
         {
             bool reduced = false;
-            if ((constrainedWangTile.Id / constrainedWangTile.Width) == constrainedWangTile.Height - 1)
+            if ((constrainedWangTile.Id / constrainedWangTile.Width) == 0)
             {
                 for (int i = constrainedWangTile.Possibilities.Count - 1; i >= 0; i--)
                 {
