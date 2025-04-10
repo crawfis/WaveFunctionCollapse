@@ -7,6 +7,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
     /// <summary>
     /// A  Constraint Node that uses a CollapseDelegate to collapse and a function to Reduce. These are settable by Properties.
     /// </summary>
+    public delegate bool CollapseDelegate<T>(T possibilities, System.Random random, out T collapsedValue);
     public class ConstraintEnumNodeWithOracles<T, N, M> : IConstraintEnumNode<T> where T : struct, System.Enum
     {
         private ISolver<T, T> _solver;
