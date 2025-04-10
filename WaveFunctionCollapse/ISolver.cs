@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace CrawfisSoftware.WaveFunctionCollapse
 {
-    public delegate bool CollapseDelegate<T>(T possibilities, System.Random random, out T collapsedValue);
     public interface ISolver<T, TChoices>
     {
         IEnumerable<IConstraintNode<T, TChoices>> Nodes { get; }
