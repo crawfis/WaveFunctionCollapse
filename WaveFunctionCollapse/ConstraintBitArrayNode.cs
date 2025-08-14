@@ -27,7 +27,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse
         public abstract bool TryCollapseNode(Random random, out BitArray collapsedValue);
         public virtual void UpdateEntropy()
         {
-            Entropy = Possibilities.SetBitsCounts();
+            Entropy = Possibilities.TrueCount();
         }
     }
 }

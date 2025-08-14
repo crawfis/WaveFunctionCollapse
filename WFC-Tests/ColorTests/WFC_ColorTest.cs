@@ -24,6 +24,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse.Tests
         static Colors allColors;
         static Colors sixColors = Colors.Red | Colors.Green | Colors.Blue | Colors.Yellow | Colors.Purple | Colors.Orange;
         static Colors threeColors = Colors.Red | Colors.Green | Colors.Blue;
+        static int _redCount = 33;
         private const int Width = 16;
         private const int Height = 16;
         private static SolverType solverType = SolverType.StateBased;
@@ -88,7 +89,7 @@ namespace CrawfisSoftware.WaveFunctionCollapse.Tests
             // Initialize nodes with possible choices.
             SolverWithOracles<Colors, Colors> solver = new SolverWithOracles<Colors, Colors>();
             var nodes = new List<IConstraintNode<Colors, Colors>>();
-            var _nodeFactory = new ColorGridConstraintNodeFactory<int, int>(grid, solver, allColors);
+            var _nodeFactory = new ColorGridConstraintNodeFactory<int, int>(grid, solver, allColors, _redCount);
             foreach (int nodeIndex in grid.Nodes)
             {
                 var node = _nodeFactory.Create(nodeIndex);
