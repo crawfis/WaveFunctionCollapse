@@ -104,8 +104,11 @@ Console output (in sample) prints each cell’s final color; ambiguous (not yet 
 
 Demonstrates:
 - Larger object domain: each TileState holds four edges (Left, Top, Right, Bottom) with (PathStyle, EdgeHeight).
+- PathStyle: None, Road, Dirt, Water, or Overpass 
+- EdgeHeight: Low, Mid, High, or Impassible
 - Edge matching constraint enforced via WangTileConstraintNode.ReduceBasedOnEdges.
 - Additional environmental pruning: WFC_MazeTest.RestrictToMaze ensures path connectivity lines up with a pre-computed maze (each tile’s path directions must equal the maze cell’s direction bitmask).
+- Tile set is trimmed by specific rules (e.g, dirt to water is allowed, but other road types are not, likewise road to dirt is allowed others are not, overpasses but be on straights, etc.).
 - Performance instrumentation comparing propagation.
 
 Flow:
@@ -210,10 +213,10 @@ Colors GatherStateAndReduce(int nodeId, Colors colors)
 ---
 ## Dependencies
 
-- CrawfisSoftware.Collections (included as project reference).
-- CrawfisSoftware.Collections.IGraph (included as project reference).
-- CrawfisSoftware.Collections.Graph (included as project reference).
-- CrawfisSoftware.Grid (included as project reference).
+- CrawfisSoftware.Collections (included as project reference) - Needed for IGraph and Grid support. Heap is used in the test project (replace with PriorityQueue in .NET 6+ if desired or just a LINQ Sort and Take).
+- CrawfisSoftware.Collections.IGraph (included as project reference) - Needed for IIndexedGraph interface and Grid class. Replace with your own grid/graph implementation if desired.
+- CrawfisSoftware.Grid (included as project reference). Replace with your own grid implementation if desired.
+
 ---
 ## License
 
