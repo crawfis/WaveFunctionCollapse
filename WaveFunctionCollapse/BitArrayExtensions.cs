@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Text;
 
-namespace CrawfisSoftware.Collections
+namespace CrawfisSoftware.Extensions
 {
     internal static class BitArrayExtensions
     {
