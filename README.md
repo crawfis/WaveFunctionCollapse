@@ -81,7 +81,7 @@ Key Pieces:
 - Reduce Strategy: (example) GraphReduceStrategy with grid adjacency or UpdateAllReduceStrategy for simplicity.
 
 Sketch:
-```
+```csharp
 var grid = new Grid<int,int>(width, height, null, null);
 var solver = new SolverWithOracles<Colors, Colors>
 {
@@ -208,9 +208,22 @@ Colors GatherStateAndReduce(int nodeId, Colors colors)
 4. Modify the solver configuration (switch reducer, change random seed, adjust constraints) and re-run.
 
 ---
+## Dependencies
+
+- CrawfisSoftware.Collections (included as project reference).
+- CrawfisSoftware.Collections.IGraph (included as project reference).
+- CrawfisSoftware.Collections.Graph (included as project reference).
+- CrawfisSoftware.Grid (included as project reference).
+---
 ## License
 
-(Add license information here if applicable.)
+This project is licensed under the GNU General Public License v3.0 (GPL-3.0).
+
+You may copy, distribute and modify the software under the terms of the GPL-3.0. You must disclose your source code and include the original copyright and license notice.
+
+SPDX-License-Identifier: GPL-3.0-only
+
+For full license text see the LICENSE file (add one with the standard GPL v3 text from https://www.gnu.org/licenses/gpl-3.0.txt).
 
 ---
 ## Contributing

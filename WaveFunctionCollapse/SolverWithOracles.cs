@@ -1,6 +1,4 @@
-﻿using CrawfisSoftware.Collections.Graph;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace CrawfisSoftware.WaveFunctionCollapse

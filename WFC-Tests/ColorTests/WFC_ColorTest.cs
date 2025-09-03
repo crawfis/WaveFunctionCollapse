@@ -1,5 +1,6 @@
-﻿using CrawfisSoftware.Collections.Graph;
-using CrawfisSoftware.Collections;
+﻿using CrawfisSoftware.Collections;
+using CrawfisSoftware.Collections.Graph;
+
 using System.Numerics; // For BitOperations
 
 namespace CrawfisSoftware.WaveFunctionCollapse.Tests

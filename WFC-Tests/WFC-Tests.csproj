@@ -16,9 +16,6 @@
     <Reference Include="CrawfisSoftware.Collections">
       <HintPath>..\ExternalReferences\CrawfisSoftware.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="CrawfisSoftware.Graph">
-      <HintPath>..\ExternalReferences\CrawfisSoftware.Graph.dll</HintPath>
-    </Reference>
     <Reference Include="CrawfisSoftware.Grid">
       <HintPath>..\ExternalReferences\CrawfisSoftware.Grid.dll</HintPath>
     </Reference>
