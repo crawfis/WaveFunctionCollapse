@@ -1,9 +1,9 @@
-# WaveFunctionCollapse
+ï»¿# WaveFunctionCollapse
 
 A small, extensible .NET library for experimenting with (and teaching) Wave Function Collapse style constraint solving. It focuses on clarity and pluggability over raw performance. The repository contains the core library (WaveFunctionCollapse) and a test / samples project (WFC-Tests) that demonstrates usage through two scenarios:
 
-1. WFC_ColorTest – classic K?color (graph coloring) problem with an additional global constraint limiting the number of Red assignments.
-2. WFC_MazeTest (aka WFC_WangTileTest) – a Wang?tile based terrain / maze style generation with edge matching, elevation (height) and path style constraints, plus an example of pruning choices to conform to a separately generated maze topology.
+1. WFC_ColorTest â€“ classic K-color (graph coloring) problem with an additional global constraint limiting the number of Red assignments.
+2. WFC_MazeTest (aka WFC_WangTileTest) â€“ a Wang-tile based terrain / maze style generation with edge matching, elevation (height) and path style constraints, plus an example of pruning choices to conform to a separately generated maze topology.
 
 ---
 ## Core Concepts
@@ -14,17 +14,17 @@ The library breaks the Wave Function Collapse process into composable pieces so 
   Orchestrates collapsing nodes, invoking constraint propagation (Reduce Strategies) and raising events.
 - Constraint Nodes (IConstraintNode<T,TChoices>)
   Encapsulate the state (domain of possibilities) of a single variable / cell.
-  * Enum domain nodes: ConstraintEnumNodeWithOracles<T,N,M> (bit?flag style enums).
+  * Enum domain nodes: ConstraintEnumNodeWithOracles<T,N,M> (bitâ€‘flag style enums).
   * BitArray domain nodes: ConstraintBitArrayNode (abstract base if you prefer raw bitsets).
   * List domain nodes (Wang tiles): WangTileConstraintNode<TEdge,TTile>.
 - Node Factories (IConstraintNodeFactory<T,TChoices>)
   Create and configure nodes (e.g., ColorGridConstraintNodeFactory, WangTileConstraintNodeFactory).
 - Reduce Strategies (IReduceStrategy<T,TChoices>)
   Decide how constraint propagation iterates:
-  * UpdateAllReduceStrategy – brute force: re-run Reduce() on every node each ripple.
-  * GraphReduceStrategy – targeted propagation using a graph & a queue (only neighbors / registered constraints are revisited).
+  * UpdateAllReduceStrategy â€“ brute force: re-run Reduce() on every node each ripple.
+  * GraphReduceStrategy â€“ targeted propagation using a graph & a queue (only neighbors / registered constraints are revisited).
 - Oracles (ConstraintOracles)
-  Pluggable delegates for collapsing (e.g., first option, random option) and default no?op reducers.
+  Pluggable delegates for collapsing (e.g., first option, random option) and default noâ€‘op reducers.
 - Entropy
   Each node exposes an Entropy value (e.g., number of remaining possibilities) that a NodeSelector can exploit.
 - Events & Instrumentation
@@ -45,9 +45,9 @@ The library breaks the Wave Function Collapse process into composable pieces so 
 ## Choices You Can Customize
 
 - Domain Representation:
-  * Enum flags (simple & fast bitwise membership) – use ConstraintEnumNodeWithOracles.
-  * BitArray (arbitrary sized domains) – derive from ConstraintBitArrayNode.
-  * Explicit object list – WangTileConstraintNode for tile matching problems.
+  * Enum flags (simple & fast bitwise membership) â€“ use ConstraintEnumNodeWithOracles.
+  * BitArray (arbitrary sized domains) â€“ derive from ConstraintBitArrayNode.
+  * Explicit object list â€“ WangTileConstraintNode for tile matching problems.
 - Collapse Strategy:
   * CollapseToFirstOption (deterministic) or CollapseToRandomOption (stochastic) or supply your own CollapseDelegate.
 - Node Selection Heuristic:
@@ -68,7 +68,7 @@ The library breaks the Wave Function Collapse process into composable pieces so 
   * Limit ripples by MaxRipples on strategies or stop after N collapses by passing numberToCollapse to TrySolve.
 
 ---
-## Color (K?Coloring) Example
+## Color (Kâ€‘Coloring) Example
 
 Goal: Assign one of several colors to each grid cell so no adjacent cells share a color AND the total number of Red cells is capped.
 
@@ -97,7 +97,7 @@ Instrumentation (after solve):
 - solver.ReduceStrategy.NumberOfPropagationCalls
 - solver.ReduceStrategy.NumberOfReduceCalls
 
-Console output (in sample) prints each cell’s final color; ambiguous (not yet fully collapsed) cells appear in gray.
+Console output (in sample) prints each cellâ€™s final color; ambiguous (not yet fully collapsed) cells appear in gray.
 
 ---
 ## Wang Tile Maze Example
@@ -105,12 +105,12 @@ Console output (in sample) prints each cell’s final color; ambiguous (not yet fu
 Demonstrates:
 - Larger object domain: each TileState holds four edges (Left, Top, Right, Bottom) with (PathStyle, EdgeHeight).
 - Edge matching constraint enforced via WangTileConstraintNode.ReduceBasedOnEdges.
-- Additional environmental pruning: WFC_MazeTest.RestrictToMaze ensures path connectivity lines up with a pre-computed maze (each tile’s path directions must equal the maze cell’s direction bitmask).
+- Additional environmental pruning: WFC_MazeTest.RestrictToMaze ensures path connectivity lines up with a pre-computed maze (each tileâ€™s path directions must equal the maze cellâ€™s direction bitmask).
 - Performance instrumentation comparing propagation.
 
 Flow:
 1. Create tile set (TileSetCreation.CreateTileSet()).
-2. Pick GraphPropagation reducer (ReducerType.GraphPropagation) – uses GraphReduceStrategy.
+2. Pick GraphPropagation reducer (ReducerType.GraphPropagation) â€“ uses GraphReduceStrategy.
 3. Collapse tiles until solved or choices exhausted.
 4. Count unique tiles used vs total set; print performance stats.
 
@@ -125,8 +125,8 @@ You can extend by subclassing WangTileConstraintNode (see ConstrainedWangTile) a
 Attach to these on SolverWithOracles:
 - OnNodeCollapseStarting(int id, TChoices possibilities)
 - OnNodeCollapseEnded(int id, T collapsedValue)
-- OnNodeCollapsed(int id, T collapsedValue) – fires only if a collapse actually occurred.
-- OnNodeChanged(int id) – whenever a Reduce() call changed a node’s domain.
+- OnNodeCollapsed(int id, T collapsedValue) â€“ fires only if a collapse actually occurred.
+- OnNodeChanged(int id) â€“ whenever a Reduce() call changed a nodeâ€™s domain.
 - RippleWaveCompleted(int rippleIndex)
 - OnPropagateStarting / OnPropagateEnding
 
@@ -140,14 +140,14 @@ Return the SAME value to signal no change; return a different value to trigger N
 Ensure determinism if repeatability matters (seeded randomness only inside Collapse delegates, not Reducers unless you accept non-determinism).
 
 Example pattern (from color test):
-```
+```csharp
 Colors GatherStateAndReduce(int nodeId, Colors colors)
 {
     if (redCount <= 0) colors &= ~Colors.Red;        // global quota
     foreach (var neighbor in grid.Neighbors(nodeId))
     {
         var nVal = solver.GetNodeValues(neighbor);
-        if (IsSingleton(nVal)) colors &= ~nVal;       // forbid neighbor’s unique color
+        if (IsSingleton(nVal)) colors &= ~nVal;       // forbid neighborâ€™s unique color
     }
     return colors;
 }
@@ -178,7 +178,7 @@ Colors GatherStateAndReduce(int nodeId, Colors colors)
 ---
 ## Practical Tips
 
-- Always minimize side effects in Reducers – deterministic, idempotent transformations make debugging easier.
+- Always minimize side effects in Reducers â€“ deterministic, idempotent transformations make debugging easier.
 - Keep Reducers fast; they are called very frequently.
 - Track entropy updates if you implement adaptive NodeSelector heuristics (call node.UpdateEntropy()).
 - For large tile sets, pre-index possibilities by edge signature to accelerate elimination (future optimization).
@@ -217,4 +217,4 @@ Colors GatherStateAndReduce(int nodeId, Colors colors)
 
 Issues / PRs for: documentation clarifications, new strategy types, example scenarios, performance improvements.
 
-Enjoy experimenting with constraint solving – and feel free to adapt the pieces to your own procedural generation projects.
+Enjoy experimenting with constraint solving â€“ and feel free to adapt the pieces to your own procedural generation projects.
