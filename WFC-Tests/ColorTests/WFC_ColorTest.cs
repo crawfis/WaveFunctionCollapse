@@ -55,36 +55,6 @@ namespace CrawfisSoftware.WaveFunctionCollapse.Tests
             Console.WriteLine();
         }
 
-        private static void WriteColorValue(Colors value, int width)
-        {
-            // If multiple possibilities remain (more than one flag set), print in gray.
-            if (BitOperations.PopCount((uint)value) != 1)
-            {
-                var previous = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write(value.ToString().PadLeft(width));
-                Console.ForegroundColor = previous;
-                return;
-            }
-            var color = GetConsoleColor(value);
-            var old = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            // Print just the single color name (enum ToString ok here)
-            Console.Write(value.ToString().PadLeft(width));
-            Console.ForegroundColor = old;
-        }
-
-        private static ConsoleColor GetConsoleColor(Colors color) => color switch
-        {
-            Colors.Red => ConsoleColor.Red,
-            Colors.Green => ConsoleColor.Green,
-            Colors.Blue => ConsoleColor.Blue,
-            Colors.Yellow => ConsoleColor.Yellow,
-            Colors.Purple => ConsoleColor.Magenta,
-            Colors.Orange => ConsoleColor.DarkYellow, // Approximation
-            _ => ConsoleColor.White
-        };
-
         private static ISolver<Colors, Colors> StateBasedSolver(Grid<int, int> grid)
         {
             SolverWithOracles<Colors, Colors> solver = CreateSolver(grid);
@@ -120,7 +90,6 @@ namespace CrawfisSoftware.WaveFunctionCollapse.Tests
                 nodes.Add(node);
             }
 
-            //solver.OnNodeCollapsed += Solver_OnNodeCollapsed;
             solver.Initialize(nodes);
             var heapNodes = new Heap<IConstraintNode<Colors, Colors>>(new EntropyComparer<Colors, Colors>());
             foreach (var node in solver.Nodes)
@@ -131,17 +100,34 @@ namespace CrawfisSoftware.WaveFunctionCollapse.Tests
             return solver;
         }
 
-        //static int redCount = 3;
-        //private static void Solver_OnNodeCollapsed(int nodeId, Colors collapsedColor)
-        //{
-        //    if (collapsedColor == Colors.Red)
-        //    {
-        //        redCount--;
-        //        if (redCount == 0)
-        //        {
-        //            Console.WriteLine("Red is done!");
-        //        }
-        //    }
-        //}
+        private static void WriteColorValue(Colors value, int width)
+        {
+            // If zero or multiple possibilities remain (more than one flag set), print in gray.
+            if (BitOperations.PopCount((uint)value) != 1)
+            {
+                var previous = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.Write(value.ToString().PadLeft(width));
+                Console.ForegroundColor = previous;
+                return;
+            }
+            var color = GetConsoleColor(value);
+            var old = Console.ForegroundColor;
+            Console.ForegroundColor = color;
+            // Print just the single color name (enum ToString ok here)
+            Console.Write(value.ToString().PadLeft(width));
+            Console.ForegroundColor = old;
+        }
+
+        private static ConsoleColor GetConsoleColor(Colors color) => color switch
+        {
+            Colors.Red => ConsoleColor.Red,
+            Colors.Green => ConsoleColor.Green,
+            Colors.Blue => ConsoleColor.Blue,
+            Colors.Yellow => ConsoleColor.Yellow,
+            Colors.Purple => ConsoleColor.Magenta,
+            Colors.Orange => ConsoleColor.DarkYellow, // Approximation
+            _ => ConsoleColor.White
+        };
     }
 }

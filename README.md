@@ -97,7 +97,7 @@ Instrumentation (after solve):
 - solver.ReduceStrategy.NumberOfPropagationCalls
 - solver.ReduceStrategy.NumberOfReduceCalls
 
-Console output (in sample) prints each cell’s final color; ambiguous (not yet fully collapsed) cells appear in gray.
+Console output (in sample) prints each cell’s final color; null or ambiguous (not yet fully collapsed) cells appear in gray.
 
 ---
 ## Wang Tile Maze Example

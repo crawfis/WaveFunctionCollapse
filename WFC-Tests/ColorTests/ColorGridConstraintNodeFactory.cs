@@ -46,6 +46,8 @@ namespace CrawfisSoftware.WaveFunctionCollapse.Tests
                 if (collapsedValue == Colors.Red)
                 {
                     _redCount--;
+                    // Todo: Interesting sample would be to keep track of red positions and use that to influence future collapses.
+                    // Can do this by subscribing to the OnNodeCollapsed event of the solver and checking in the GatherStateAndReduce method.
                 }
                 return true;
             }
