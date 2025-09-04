@@ -1,4 +1,6 @@
-﻿using System;
+﻿// SPDX-License-Identifier: GPL-3.0-only
+// Copyright (c) 2025 Dr. Roger Crawfis, CrawfisSoftware
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
